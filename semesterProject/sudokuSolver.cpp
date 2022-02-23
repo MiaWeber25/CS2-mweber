@@ -86,39 +86,36 @@ void welcomeToSudoku() { //welcomes the user, gets name of file with givens
 }
 
 void readGivens(string &fileName) { //read in givens && add them to vector gameBoard //MIGHT NEED TO PASS IT GAMEOARD
-    ifstream fin;
-    string i;
-    string token;
-    string line;
-    fin.open(fileName, ios::in);
-    //istringstream ss(line); //stringstream or istringstream??
-    stringstream lineStream(line);
-    while(getline(ss,token,':')) {
-        /* LOOP THROUGH GAMEBOARD USING "B" INDEX: */
+    vector<string> line; 
+    vector<string> tokens;
+    vector<string> tokens2;
+    string temp;
 
-        fin >> i;
-       // i=i-'0';
-        //cout << "token: " << token << endl;
+    ifstream fin;
+    fin.open(fileName, ios::in);
+    string intermediate;
+    string intermediate2;
+
+       while(!fin.eof()) {
+        fin >> temp;
+        line.push_back(temp);
+    } 
+    for (int t=0; t<line.size(); t++) {
+        stringstream ss(line[t]);
+        while(getline(ss, intermediate, ',')) {
+            tokens.push_back(intermediate);
+        }
     }
-    /*
-    while(!fin.eof()) { 
-        fin.ignore();
-        fin >> a >> b;
-    }*/
-    //cout << "token: " << token << endl;
-    cout << "finished loop! i: " << i << endl;
- /*
-    string line;
-    int a = 0;
-    int b = 0;
-    istringstream ss(line);
-    string token;
-    while (getline(ss, token, ':')) {
-        cout << token << endl;
-        
-       // if (!(ss >> a >>b)) {break;} 
+    for (int t=0; t<tokens.size(); t++) {
+        stringstream sss(tokens[t]);
+        while(getline(sss, intermediate2, ':')) {
+            tokens2.push_back(intermediate2);
+        }
     }
-    //cout << "a: " << a << " " << "b: " << b << endl;*/
+
+    for (int i=0; i<tokens2.size(); i++) {
+        cout << tokens2[i] << endl;
+    }
 }
 
 void printBoard() {    

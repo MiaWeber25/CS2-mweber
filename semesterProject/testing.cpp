@@ -7,13 +7,15 @@
 using namespace std;
 /*This code is an attempt to read in from file and then parse it.*/
 int main() {
-    vector<string> line; //vector of integers to store the pre-parsed data from test.txt
+    vector<string> line; 
     vector<string> tokens;
     vector<string> tokens2;
-    string inFile;
     string temp;
+
+    string inFile;
     cout << "enter file name: ";
     cin >> inFile;
+    
     ifstream fin;
     fin.open(inFile, ios::in);
     string intermediate;
@@ -35,7 +37,7 @@ int main() {
             tokens2.push_back(intermediate2);
         }
     }
-    
+
     for (int i=0; i<tokens2.size(); i++) {
         cout << tokens2[i] << endl;
     }
