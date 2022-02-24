@@ -36,8 +36,7 @@ class Plot { //ONLY KNOWS IF THE PLOT HAS SPACE && WHAT PLANTS ARE IN THE PLOT
         myPlot.push_back(p);
 
         //calculate availablSpace
-        temporary = p.getPlantSize();
-        //availableSpace = availableSpace - (p.getPlantSize());
+        availableSpace = availableSpace - (p.getPlantSize()); //GETTING AN ERROR HERE...
     }
     //getter
     int getAvailableSpace() {
@@ -52,11 +51,11 @@ class Plant {
     int plantSize;
 
    public:
-   /*
-   Plant (string tempPlantName, int tempPlantSize) {
+   
+   Plant(string tempPlantName, int tempPlantSize) {
        plantName = tempPlantName;
        plantSize = tempPlantSize;
-   }*/
+   }
 
     //getter
     string getPlantName() {
@@ -78,14 +77,15 @@ class Plant {
 
 int main() {
     Garden g;
-   
+    
     string tempPlantName;
     int tempPlantSize;
+    Plant p(tempPlantName, tempPlantSize);
     int plantNum;
     int flag = 0;
         cout << "Welcome to The Garden Plot Calculator!" << endl;
         while (flag == 0) {
-            Plant p;
+            
             cout << "Enter name of the plant: ";
             cin >> tempPlantName;
             //SETTER
@@ -98,6 +98,7 @@ int main() {
             cin >> plantNum;
             for (int i=0; i<plantNum; i++) {
                 //CREATE A NEW PLANT --> GIVE IT TO GARDEN
+                Plant p(tempPlantName, tempPlantSize);
 
             }
             //p = new Plant(tempPlantName, tempPlantSize);
@@ -107,47 +108,3 @@ int main() {
 
     return 0;
 }
-
-
-
-
-
-
-
-/*
-    Plant temp;
-    vector<Plant> sampleGarden;
-
-    while (flag == 0) { //create a new plant each time the user enters plant data and then add it to the vector
-        p.getFromUser(g);
-        sampleGarden.push_back(p);
-        
-    }
-     FOR TESTING: 
-    cout << "plantName: " << p.plantName << endl;
-    cout << "plantSize: " << p.plantSize << endl;
-    for (int i=0; i<sampleGarden.size(); i++) {
-        cout << "SampleGarden plantName: " << sampleGarden[i].plantName << endl;
-        cout << "SampleGarden plantSize: " << sampleGarden[i].plantSize << endl;
-    }
-    //int plantNum;
-    
-    for (int i=0; i<sampleGarden.size(); i++) {
-        int spaceNeeded = 0;
-        //int newPlantNum = 0;
-        //newPlantNum = g.getPlantNum();
-        //cout << "newPlantNum: " << newPlantNum << endl;
-      //  calculateSpaceNeeded(p,spaceNeedednewPlantNum); //call tryPlant or addPlant (from square class) with the value calculated FOR EACH PLANT HERE...
-        calculateSpaceNeeded(sampleGarden[i], spaceNeeded);
-    }
-
-}
-
-int calculateSpaceNeeded(Plant& p, int &spaceNeeded, int &plantNum) {
-    spaceNeeded = (p.getPlantSize()) * (p.getPlantNum()); //doesn't even seem to matter is this is = or +=
-    cout << "plantSize: " << p.getPlantSize() << endl << endl;
-    cout << "plantNum: " << p.getPlantNum() << endl << endl;
-    cout << "spaceNeeded: " << spaceNeeded << endl;
-    return spaceNeeded;
-
-}*/
