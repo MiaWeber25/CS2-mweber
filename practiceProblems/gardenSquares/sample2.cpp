@@ -7,7 +7,6 @@ class Plant;
 class Plot;
 class Garden;
 
-
 class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MORE PLOTS TO THE GARDEN
     int totalPlots;
     vector<Plot> myGarden;
