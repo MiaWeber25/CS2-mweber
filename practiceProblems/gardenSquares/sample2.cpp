@@ -7,42 +7,6 @@ class Plant;
 class Plot;
 class Garden;
 
-class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MORE PLOTS TO THE GARDEN
-    int totalPlots;
-    vector<Plot> myGarden;
-    void addPlot() {
-        totalPlots++; //increment totalPlots
-    }
-
-    public:
-    void addPlant(Plant &p) { //check if you can add a plant
-    //if...
-    //then call addPlant from Plot
-    }
-    //getter
-    vector<Plot> getMyGarden() {
-        return myGarden;
-    }
-};
-
-class Plot { //ONLY KNOWS IF THE PLOT HAS SPACE && WHAT PLANTS ARE IN THE PLOT
-    int availableSpace = 16;
-    vector<Plant> myPlot;
-
-    public:
-    int temporary;
-    void addPlant(Plant &p) {
-        myPlot.push_back(p);
-
-        //calculate availablSpace
-        availableSpace = availableSpace - (p.getPlantSize()); //GETTING AN ERROR HERE...
-    }
-    //getter
-    int getAvailableSpace() {
-        return availableSpace;
-    }
-};
-
 
 class Plant {
      
@@ -73,13 +37,86 @@ class Plant {
     
 
 };
+class Plot { //ONLY KNOWS IF THE PLOT HAS SPACE && WHAT PLANTS ARE IN THE PLOT
+    int availableSpace = 16;
+    vector<Plant> myPlot;
+
+    public:
+    int temporary;
+    void addPlant(Plant &p) {
+        myPlot.push_back(p);
+
+        //calculate availablSpace
+        availableSpace = availableSpace - (p.getPlantSize()*p.getPlantSize()); 
+        cout << "AVAILABLE SPACE: " << availableSpace << endl;
+        for (int i=0; i<myPlot.size(); i++) {
+            cout << "plant in myPlot: " << myPlot[i].getPlantName() << endl;
+        }
+    }
+    //getter
+    int getAvailableSpace() {
+        return availableSpace;
+    }
+    void setAvailableSpace(const int &newAvailableSpace) {
+        availableSpace = newAvailableSpace;
+    }
+};
+
+class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MORE PLOTS TO THE GARDEN
+    //int totalPlots = 1;
+    vector<Plot> myGarden;
+    /*void addPlot(Plot &plot) {
+        //totalPlots++; //increment totalPlots
+        myGarden.push_back(plot);
+    }*/
+    public:
+    Plot plot;
+    void addPlot(Plot &plot) {
+        //totalPlots++; //increment totalPlots
+        myGarden.push_back(plot);
+        cout << "myGarden Size from addPlot: " << myGarden.size() << endl;
+        
+    }
+    //myGarden.push_back(plot);
+    void addPlant(Plant &p) { //check if you can add a plant
+    //loop through your plots, see if there is room for the plant in the plot 
+        //plot.setAvailableSpace(16);
+        for (int i=0; i<myGarden.size(); i++) {
+            if (plot.getAvailableSpace() >= p.getPlantSize()) { //room for the plant in the plot!
+                plot.addPlant(p);
+                return;
+            } else if (plot.getAvailableSpace() < p.getPlantSize()) { //not enough room for plant in the plot!
+                Plot newPlot;
+                newPlot.setAvailableSpace(16);
+                addPlot(newPlot); //add a plot
+                //add plant to that new plot...
+                newPlot.addPlant(p);
+
+                return;
+            }
+        }
+    
+    cout << "TOTAL PLOTS: " << myGarden.size() << endl;
+    //if...
+    //then call addPlant from Plot
+    }
+    //getter
+    vector<Plot> getMyGarden() {
+        return myGarden;
+    }
+};
+
+
+
 
 int main() {
     Garden g;
-    
+    Plot plot;
     string tempPlantName;
-    int tempPlantSize;
+    int tempPlantSize=0;
     Plant p(tempPlantName, tempPlantSize);
+    g.addPlot(plot); //initialize the garden to 1 plot. You know that you need at least one plot in your garden. prevents myGarden.size() from starting at 0 for for loop...
+
     int plantNum;
     int flag = 0;
         cout << "Welcome to The Garden Plot Calculator!" << endl;
@@ -95,10 +132,14 @@ int main() {
             p.setPlantSize(tempPlantSize);
             cout << "Enter number of plants: ";
             cin >> plantNum;
-            for (int i=0; i<plantNum; i++) {
-                //CREATE A NEW PLANT --> GIVE IT TO GARDEN
-                Plant p(tempPlantName, tempPlantSize);
-
+            while (plantNum >0) {
+                for (int i=0; i<plantNum; i++) {
+                    //CREATE A NEW PLANT 
+                    Plant p(tempPlantName, tempPlantSize);
+                    //--> GIVE IT TO GARDEN
+                    g.addPlant(p);
+                    plantNum--;
+                }
             }
             //p = new Plant(tempPlantName, tempPlantSize);
             cout << "do you want to continue? 0 for yes, 1 for no: " << endl;
