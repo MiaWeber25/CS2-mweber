@@ -1,3 +1,4 @@
+/* PARSING FILE INPUT STREAM
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -5,7 +6,7 @@
 
 
 using namespace std;
-/*This code is an attempt to read in from file and then parse it.*/
+This code is an attempt to read in from file and then parse it.
 int main() {
     vector<string> line; 
     vector<string> tokens;
@@ -42,4 +43,53 @@ int main() {
         cout << tokens2[i] << endl;
     }
     return 0;
+}*/
+
+#include <iostream>
+using namespace std;
+
+void printGrid(int row, int col){
+  //cout<<endl;
+  //cout<<" ";
+  int i=1,j;
+  for(j = 0; j <= 4*col; j++){
+    //if(j%4==2)
+     //   cout<<i++;
+   // cout<<" ";
+  }
+  cout<<endl;
+  for(i = 0; i <= 2*row; i++){
+   // if(i%2!=0)
+    //  cout<<(char)(i/2 +'A');
+    for(j = 0; j <= 2*col; j++){
+      if(i%2==0)
+      {
+        if(j==0)
+            cout<<" ";
+        if(j%2==0)
+            cout<<" ";
+        else cout<<"---";
+      }
+      else{
+        if(j%2==0)
+            cout<<"|";
+        else cout<<"   ";
+      }
+    }
+   // if(i%2!=0)
+    //  cout<<(char)(i/2 +'A');
+    cout<<endl;
+  }
+  cout<<" ";
+  for(j = 0, i = 1; j <= 4*col; j++){
+   // if(j%4==2)
+        //cout<<i++;
+   // cout<<" ";
+  }
+  cout<<endl;
+}
+
+int main() {
+  printGrid(9, 9);
+  return 0;
 }
