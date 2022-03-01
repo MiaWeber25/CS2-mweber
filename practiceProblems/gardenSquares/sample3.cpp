@@ -26,7 +26,7 @@ class Plant {
         return plantName;
     }
     int getPlantSize() {
-        return plantSize;
+        return plantSize*plantSize;
     }
     //setter for plantName and plantSize
     void setPlantSize(int newPlantSize) {
@@ -47,10 +47,10 @@ class Plot { //ONLY KNOWS IF THE PLOT HAS SPACE && WHAT PLANTS ARE IN THE PLOT
         myPlot.push_back(p);
 
         //calculate availablSpace
-        availableSpace = availableSpace - (p.getPlantSize()*p.getPlantSize()); 
-        cout << "AVAILABLE SPACE: " << availableSpace << endl;
+        availableSpace = availableSpace - (p.getPlantSize()); 
+        //cout << "AVAILABLE SPACE: " << availableSpace << endl;
         for (int i=0; i<myPlot.size(); i++) {
-            cout << "plant in myPlot: " << myPlot[i].getPlantName() << endl;
+            //cout << "plant in myPlot: " << myPlot[i].getPlantName() << endl;
         }
     }
     //getter
@@ -72,31 +72,40 @@ class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MOR
     Plot plot;
     void addPlot(Plot &plot) {
         myGarden.push_back(plot);
-        cout << "myGarden Size from addPlot: " << myGarden.size() << endl;
+   //  cout << "myGarden Size from addPlot: " << myGarden.size() << endl;
         
     }
     //myGarden.push_back(plot);
-    void addPlant(Plant &p) { //check if you can add a plant
+    int addPlant(Plant &p) { //check if you can add a plant
     //loop through your plots, see if there is room for the plant in the plot 
         //plot.setAvailableSpace(16);
+       // int difference = 0;
         for (int i=0; i<myGarden.size(); i++) {
-            if (plot.getAvailableSpace() >= p.getPlantSize()) { //room for the plant in the plot!
+            if (plot.getAvailableSpace() >= (p.getPlantSize())) { //room for the plant in the plot!
+                cout << "available space = " << plot.getAvailableSpace() << "plant size = " << p.getPlantSize() << endl;
                 plot.addPlant(p);
-                return;
+               // cout << "TOTAL PLOTS: " << myGarden.size() << endl;
+                break;
             } else if (plot.getAvailableSpace() < p.getPlantSize()) { //not enough room for plant in the plot!
+                //difference = p.getPlantSize() - plot.getAvailableSpace();
+                //for (int j=0; j<difference; j++) {
+                //    plot.addPlant(p);
+                //}
                 Plot newPlot;
                 newPlot.setAvailableSpace(16);
                 addPlot(newPlot); //add a plot
                 //add plant to that new plot...
-                newPlot.addPlant(p);
+                newPlot.addPlant(p); //recursive 
 
-                return;
+              //  cout << "TOTAL PLOTS: " << myGarden.size() << endl;
+
+                break;
             }
         }
-    
-    cout << "TOTAL PLOTS: " << myGarden.size() << endl;
-    //if...
-    //then call addPlant from Plot
+    //cout << "TOTAL PLOTS: " << myGarden.size() << endl;
+    return (myGarden.size());
+
+  
     }
     //getter
     vector<Plot> getMyGarden() {
@@ -143,6 +152,7 @@ int main() {
             cout << "do you want to continue? 0 for yes, 1 for no: " << endl;
             cin >> flag;
         }
+        cout << "Congratulations! You will need " << g.getMyGarden().size() << " plots in your garden!" << endl;
 
     return 0;
 }
