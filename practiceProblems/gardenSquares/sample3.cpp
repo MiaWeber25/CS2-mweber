@@ -40,8 +40,29 @@ class Plant {
 class Plot { //ONLY KNOWS IF THE PLOT HAS SPACE && WHAT PLANTS ARE IN THE PLOT
     int availableSpace = 16; //might be causing come problems
     vector<Plant> myPlot;
+    bool can3 = true;
+    bool can2 = true;
 
     public:
+    bool checkPlants2() {
+        for (int i=0; i<myPlot.size(); i++) { //iterate over all the plants in the plot
+            if (myPlot[i].getPlantSize() == 4) {
+                cout << "plant size: " << myPlot[i].getPlantSize() << endl;
+                can3 = false;
+            }
+        }
+        return can3;
+    }
+    bool checkPlants3() {
+        for (int i=0; i<myPlot.size(); i++) {
+            if (myPlot[i].getPlantSize() == 9) {
+                can2 = false;
+                cout << "plant size: " << myPlot[i].getPlantSize() << endl;
+            }
+        }
+        return can2;
+    }
+    
     void addPlant(Plant &p) {
         myPlot.push_back(p);
         //calculate availablSpace
@@ -74,8 +95,27 @@ class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MOR
     //loop through your plots, see if there is room for the plant in the plot 
         for (int i=0; i<myGarden.size(); i++) {
             if (plot.getAvailableSpace() >= (p.getPlantSize())) { //room for the plant in the plot!
-                plot.addPlant(p);
-                break;
+                cout << "checkPlants3: " << plot.checkPlants3() << endl;
+                cout << "checkPlants2: " << plot.checkPlants2() << endl;
+                if ((p.getPlantSize() == 9 && plot.checkPlants3() == false) /*|| (p.getPlantSize() == 2 && can2 == false)*/) {//double check that the plant doesn't violate the 3x3 and 2x2 rule!
+                    cout << "getting here!" << endl;
+                    Plot newPlot;
+                    newPlot.setAvailableSpace(16);
+                    addPlot(newPlot);
+                    newPlot.addPlant(p);
+                    break;
+                }
+                else if (p.getPlantSize() == 4 && plot.checkPlants2() == false) {
+                    Plot newPlot;
+                    newPlot.setAvailableSpace(16);
+                    addPlot(newPlot);
+                    newPlot.addPlant(p);
+                    break;
+                }
+                else {
+                    plot.addPlant(p);
+                    break;
+                }
             } else if (plot.getAvailableSpace() < p.getPlantSize()) { //not enough room for plant in the plot!
                 //difference = p.getPlantSize() - plot.getAvailableSpace();
                 //for (int j=0; j<difference; j++) {
