@@ -35,9 +35,8 @@ class Plant {
     void setPlantName(string newPlantName) {
         plantName = newPlantName;
     }
-    
-
 };
+
 class Plot { //ONLY KNOWS IF THE PLOT HAS SPACE && WHAT PLANTS ARE IN THE PLOT
     int availableSpace = 16; //might be causing come problems
     vector<Plant> myPlot;
@@ -45,14 +44,13 @@ class Plot { //ONLY KNOWS IF THE PLOT HAS SPACE && WHAT PLANTS ARE IN THE PLOT
     public:
     void addPlant(Plant &p) {
         myPlot.push_back(p);
-
         //calculate availablSpace
         availableSpace = availableSpace - (p.getPlantSize()); 
-        //cout << "AVAILABLE SPACE: " << availableSpace << endl;
-        for (int i=0; i<myPlot.size(); i++) {
+        //for (int i=0; i<myPlot.size(); i++) {
             //cout << "plant in myPlot: " << myPlot[i].getPlantName() << endl;
-        }
+       // }
     }
+
     //getter
     int getAvailableSpace() {
         return availableSpace;
@@ -64,27 +62,19 @@ class Plot { //ONLY KNOWS IF THE PLOT HAS SPACE && WHAT PLANTS ARE IN THE PLOT
 
 class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MORE PLOTS TO THE GARDEN
     vector<Plot> myGarden;
-    /*void addPlot(Plot &plot) {
-        //totalPlots++; //increment totalPlots
-        myGarden.push_back(plot);
-    }*/
+   
     public:
     Plot plot;
     void addPlot(Plot &plot) {
-        myGarden.push_back(plot);
-   //  cout << "myGarden Size from addPlot: " << myGarden.size() << endl;
-        
+        myGarden.push_back(plot);        
     }
+
     //myGarden.push_back(plot);
-    int addPlant(Plant &p) { //check if you can add a plant
+    void addPlant(Plant &p) { //check if you can add a plant
     //loop through your plots, see if there is room for the plant in the plot 
-        //plot.setAvailableSpace(16);
-       // int difference = 0;
         for (int i=0; i<myGarden.size(); i++) {
             if (plot.getAvailableSpace() >= (p.getPlantSize())) { //room for the plant in the plot!
-                cout << "available space = " << plot.getAvailableSpace() << "plant size = " << p.getPlantSize() << endl;
                 plot.addPlant(p);
-               // cout << "TOTAL PLOTS: " << myGarden.size() << endl;
                 break;
             } else if (plot.getAvailableSpace() < p.getPlantSize()) { //not enough room for plant in the plot!
                 //difference = p.getPlantSize() - plot.getAvailableSpace();
@@ -96,16 +86,9 @@ class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MOR
                 addPlot(newPlot); //add a plot
                 //add plant to that new plot...
                 newPlot.addPlant(p); //recursive 
-
-              //  cout << "TOTAL PLOTS: " << myGarden.size() << endl;
-
                 break;
             }
-        }
-    //cout << "TOTAL PLOTS: " << myGarden.size() << endl;
-    return (myGarden.size());
-
-  
+        }    
     }
     //getter
     vector<Plot> getMyGarden() {
@@ -153,6 +136,12 @@ int main() {
             cin >> flag;
         }
         cout << "Congratulations! You will need " << g.getMyGarden().size() << " plots in your garden!" << endl;
-
+        //iterate over the garden
+        /*
+        for (int i=0; i<g.getMyGarden().size(); i++) {
+            for (int i=0; i<plot.size(); i++) {
+                cout << "plant in myPlot: " << plot[i].getPlantName() << endl;
+        }
+        }*/
     return 0;
 }
