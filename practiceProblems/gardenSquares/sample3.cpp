@@ -45,25 +45,39 @@ class Plot { //ONLY KNOWS IF THE PLOT HAS SPACE && WHAT PLANTS ARE IN THE PLOT
 
     public:
     bool checkPlants2() {
-        for (int i=0; i<myPlot.size(); i++) { //iterate over all the plants in the plot
-            if (myPlot[i].getPlantSize() == 4) {
-                cout << "plant size: " << myPlot[i].getPlantSize() << endl;
-                can3 = false;
-            }
-        }
-        return can3;
+        cout << endl << "calling checkPlants2" << endl << endl;
+        if (can2 == true) {
+            return true;
+        } else 
+            return false;
     }
     bool checkPlants3() {
-        for (int i=0; i<myPlot.size(); i++) {
-            if (myPlot[i].getPlantSize() == 9) {
-                can2 = false;
-                cout << "plant size: " << myPlot[i].getPlantSize() << endl;
-            }
-        }
-        return can2;
+        cout << endl << "calling checkPlants3" << endl << endl;
+        if (can3 == true)
+            return true;
+        else 
+            return false;
     }
     
     void addPlant(Plant &p) {
+        //is the plantSize == 3 or 2? (9 or 4)
+        if (p.getPlantSize() == 9) {
+            checkPlants3();
+        } else if (p.getPlantSize() == 4) {
+            checkPlants2();
+        }
+        //check to make sure that the plant is able to be placed (2x2 and 3x3 not in the same plot)
+        if (p.getPlantSize() == 3 && can3 == true) {
+            //go ahead and plant it!
+            myPlot.push_back(p);
+            availableSpace = availableSpace - (p.getPlantSize());
+        } else if (p.getPlantSize() == 2 && can2 == true) {
+            //go ahead and plant it!
+            myPlot.push_back(p);
+            availableSpace = availableSpace - (p.getPlantSize());
+        } 
+
+
         myPlot.push_back(p);
         //calculate availablSpace
         availableSpace = availableSpace - (p.getPlantSize()); 
@@ -95,10 +109,10 @@ class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MOR
     //loop through your plots, see if there is room for the plant in the plot 
         for (int i=0; i<myGarden.size(); i++) {
             if (plot.getAvailableSpace() >= (p.getPlantSize())) { //room for the plant in the plot!
-                cout << "checkPlants3: " << plot.checkPlants3() << endl;
-                cout << "checkPlants2: " << plot.checkPlants2() << endl;
+                //cout << "checkPlants3: " << plot.checkPlants3() << endl;
+                //cout << "checkPlants2: " << plot.checkPlants2() << endl;
                 if ((p.getPlantSize() == 9 && plot.checkPlants3() == false) /*|| (p.getPlantSize() == 2 && can2 == false)*/) {//double check that the plant doesn't violate the 3x3 and 2x2 rule!
-                    cout << "getting here!" << endl;
+                  //  cout << "getting here!" << endl;
                     Plot newPlot;
                     newPlot.setAvailableSpace(16);
                     addPlot(newPlot);

@@ -81,8 +81,10 @@ class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MOR
         //plot.setAvailableSpace(16);
         for (int i=0; i<myGarden.size(); i++) {
             if (plot.getAvailableSpace() >= p.getPlantSize()) { //room for the plant in the plot!
-                plot.addPlant(p);
-                return;
+                if (true) {//doesn't violate 2&3 rule {
+                    plot.addPlant(p);
+                    return;
+                }
             } else if (plot.getAvailableSpace() < p.getPlantSize()) { //not enough room for plant in the plot!
                 Plot newPlot;
                 newPlot.setAvailableSpace(16);
