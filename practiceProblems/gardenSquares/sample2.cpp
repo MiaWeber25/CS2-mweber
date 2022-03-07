@@ -48,36 +48,26 @@ class Plot { //ONLY KNOWS IF THE PLOT HAS SPACE && WHAT PLANTS ARE IN THE PLOT
 
         //calculate availablSpace
         availableSpace = availableSpace - (p.getPlantSize()); 
-        cout << "AVAILABLE SPACE: " << availableSpace << endl;
         for (int i=0; i<myPlot.size(); i++) {
             cout << "plant in myPlot: " << myPlot[i].getPlantName() << endl;
         }
     }
     bool violate23Rule(Plant &p) {
-        cout << "CALLED VIOLATE 23 RULE" << endl;
         if (p.getPlantSize() == 9) {
-            cout << "plant size identified as 3" << endl;
             //are there any size 2 plants in the plot?
             for (int i=0; i<myPlot.size(); i++) {
-                cout << "index: " << i << endl;
                 if (myPlot[i].getPlantSize() == 4) {
-                    cout << "found a plant size 2" << endl;
                     return true; //yes! the rule was violated
                 } else {
-                    cout << "didn't find a plant size 2" << endl;
                     return false; //no! the rule was not violated
                 }
             }
         } else if (p.getPlantSize() == 4) {
-            cout << "plant size identified as 2" << endl;
             //are there any size 3 plants in the plot?
             for (int i=0; i<myPlot.size(); i++) {
-                cout << "index: " << i << endl;
                 if (myPlot[i].getPlantSize() == 9) {
-                    cout << "found a plant size 3" <<endl;
                     return true; //yes! the rule was violated
                 } else {
-                    cout << "didn't find a plant size 3" << endl;
                     return false; //no! the rule was not violated
                 }
             }
@@ -103,50 +93,34 @@ class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MOR
     public:
     Plot plot;
     void addPlot(Plot &plot) {
-        myGarden.push_back(plot);
-        cout << "myGarden Size from addPlot: " << myGarden.size() << endl;
-        
+        myGarden.push_back(plot);        
     }
     //myGarden.push_back(plot);
     void addPlant(Plant &p) { //check if you can add a plant
     //loop through your plots, see if there is room for the plant in the plot 
         //plot.setAvailableSpace(16);
         for (int i=0; i<myGarden.size(); i++) {
-            if (plot.getAvailableSpace() >= p.getPlantSize()) { //room for the plant in the plot!
-                if (plot.violate23Rule(p) == false) {//doesn't violate 2&3 rule {
-                    plot.addPlant(p);
-                    cout << "I got here. The plant was added" << endl << endl;
-                    return;
-                } else {
-                    Plot newPlot;
-                    newPlot.setAvailableSpace(16);
-                    addPlot(newPlot); //add a plot
-                    //add plant to that new plot...
-                    newPlot.addPlant(p);
-                    return;
-                }
-            } else if (plot.getAvailableSpace() < p.getPlantSize()) { //not enough room for plant in the plot!
+            //CHANGE --> there is room and doesn't violate so PLANT THE PLANT
+            if (myGarden[i].getAvailableSpace() < p.getPlantSize() || myGarden[i].violate23Rule(p)) {
+                //make a new plot
                 Plot newPlot;
                 newPlot.setAvailableSpace(16);
                 addPlot(newPlot); //add a plot
                 //add plant to that new plot...
                 newPlot.addPlant(p);
-                return;
+            //CHANGE --> don't need an else (if it exists for loop it didn't plant anything) so ADD A NEW PLOT
+            } else {
+                plot.addPlant(p);
             }
         }
-    
-    cout << "TOTAL PLOTS: " << myGarden.size() << endl;
-    //if...
-    //then call addPlant from Plot
+        //ADD THE SECOND CHANGE HERE (adding a plot)
+        cout << "TOTAL PLOTS: " << myGarden.size() << endl;
     }
     //getter
     vector<Plot> getMyGarden() {
         return myGarden;
     }
 };
-
-
-
 
 int main() {
     Garden g;
