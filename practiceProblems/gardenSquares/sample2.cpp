@@ -26,7 +26,7 @@ class Plant {
         return plantName;
     }
     int getPlantSize() {
-        return plantSize;
+        return plantSize*plantSize;
     }
     //setter for plantName and plantSize
     void setPlantSize(int newPlantSize) {
@@ -47,10 +47,42 @@ class Plot { //ONLY KNOWS IF THE PLOT HAS SPACE && WHAT PLANTS ARE IN THE PLOT
         myPlot.push_back(p);
 
         //calculate availablSpace
-        availableSpace = availableSpace - (p.getPlantSize()*p.getPlantSize()); 
+        availableSpace = availableSpace - (p.getPlantSize()); 
         cout << "AVAILABLE SPACE: " << availableSpace << endl;
         for (int i=0; i<myPlot.size(); i++) {
             cout << "plant in myPlot: " << myPlot[i].getPlantName() << endl;
+        }
+    }
+    bool violate23Rule(Plant &p) {
+        cout << "CALLED VIOLATE 23 RULE" << endl;
+        if (p.getPlantSize() == 9) {
+            cout << "plant size identified as 3" << endl;
+            //are there any size 2 plants in the plot?
+            for (int i=0; i<myPlot.size(); i++) {
+                cout << "index: " << i << endl;
+                if (myPlot[i].getPlantSize() == 4) {
+                    cout << "found a plant size 2" << endl;
+                    return true; //yes! the rule was violated
+                } else {
+                    cout << "didn't find a plant size 2" << endl;
+                    return false; //no! the rule was not violated
+                }
+            }
+        } else if (p.getPlantSize() == 4) {
+            cout << "plant size identified as 2" << endl;
+            //are there any size 3 plants in the plot?
+            for (int i=0; i<myPlot.size(); i++) {
+                cout << "index: " << i << endl;
+                if (myPlot[i].getPlantSize() == 9) {
+                    cout << "found a plant size 3" <<endl;
+                    return true; //yes! the rule was violated
+                } else {
+                    cout << "didn't find a plant size 3" << endl;
+                    return false; //no! the rule was not violated
+                }
+            }
+        } else {
+            return false;
         }
     }
     //getter
@@ -81,8 +113,16 @@ class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MOR
         //plot.setAvailableSpace(16);
         for (int i=0; i<myGarden.size(); i++) {
             if (plot.getAvailableSpace() >= p.getPlantSize()) { //room for the plant in the plot!
-                if (true) {//doesn't violate 2&3 rule {
+                if (plot.violate23Rule(p) == false) {//doesn't violate 2&3 rule {
                     plot.addPlant(p);
+                    cout << "I got here. The plant was added" << endl << endl;
+                    return;
+                } else {
+                    Plot newPlot;
+                    newPlot.setAvailableSpace(16);
+                    addPlot(newPlot); //add a plot
+                    //add plant to that new plot...
+                    newPlot.addPlant(p);
                     return;
                 }
             } else if (plot.getAvailableSpace() < p.getPlantSize()) { //not enough room for plant in the plot!
@@ -91,7 +131,6 @@ class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MOR
                 addPlot(newPlot); //add a plot
                 //add plant to that new plot...
                 newPlot.addPlant(p);
-
                 return;
             }
         }
@@ -133,13 +172,12 @@ int main() {
             cout << "Enter number of plants: ";
             cin >> plantNum;
             while (plantNum >0) {
-                for (int i=0; i<plantNum; i++) {
-                    //CREATE A NEW PLANT 
-                    Plant p(tempPlantName, tempPlantSize);
-                    //--> GIVE IT TO GARDEN
-                    g.addPlant(p);
-                    plantNum--;
-                }
+                //CREATE A NEW PLANT 
+                Plant p(tempPlantName, tempPlantSize);
+                //--> GIVE IT TO GARDEN
+                g.addPlant(p);
+                plantNum--;
+                
             }
             //p = new Plant(tempPlantName, tempPlantSize);
             cout << "do you want to continue? 0 for yes, 1 for no: " << endl;
