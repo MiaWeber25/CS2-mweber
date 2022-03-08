@@ -48,9 +48,11 @@ class Plot { //ONLY KNOWS IF THE PLOT HAS SPACE && WHAT PLANTS ARE IN THE PLOT
 
         //calculate availablSpace
         availableSpace = availableSpace - (p.getPlantSize()); 
-       /* for (int i=0; i<myPlot.size(); i++) {
-            cout << "plant in myPlot: " << myPlot[i].getPlantName() << endl;
-        }*/
+        for (int i=0; i<myPlot.size(); i++) {
+            cout << "Plot #" << i+1 << ": ";
+            cout << "contains: " << myPlot[i].getPlantName() << endl;
+        }
+        cout << endl;
     }
     bool violate23Rule(Plant &p) {
         if (p.getPlantSize() == 9) {
@@ -76,10 +78,11 @@ class Plot { //ONLY KNOWS IF THE PLOT HAS SPACE && WHAT PLANTS ARE IN THE PLOT
         } 
         return false;
     }
-    void printPlotContents() {
+    void print() {
         for (int i=0; i<myPlot.size(); i++) {
-            cout << "contains: " << myPlot[i].getPlantName() << endl;
+            cout << "plot contains: " << myPlot[i].getPlantName() << ", ";
         }
+        cout << endl;
     }
     //getter
     int getAvailableSpace() {
@@ -92,10 +95,7 @@ class Plot { //ONLY KNOWS IF THE PLOT HAS SPACE && WHAT PLANTS ARE IN THE PLOT
 
 class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MORE PLOTS TO THE GARDEN
     vector<Plot> myGarden;
-    /*void addPlot(Plot &plot) {
-        //totalPlots++; //increment totalPlots
-        myGarden.push_back(plot);
-    }*/
+
     public:
     Plot plot;
     void addPlot(Plot &plot) {
@@ -107,10 +107,7 @@ class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MOR
         for (int i=0; i<myGarden.size(); i++) {
             //CHANGE --> there is room and doesn't violate so PLANT THE PLANT
             if (myGarden[i].getAvailableSpace() > p.getPlantSize() && !myGarden[i].violate23Rule(p)) {
-                //plot.addPlant(p); 
                 myGarden[i].addPlant(p);
-                //printGardenContents();
-                //cout << "TOTAL PLOTS: " << myGarden.size() << endl;
                 return;
             }
         }
@@ -121,17 +118,8 @@ class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MOR
         addPlot(newPlot); //add a plot
         //add plant to that new plot...
         newPlot.addPlant(p); 
-        //printGardenContents();
-       // cout << "TOTAL PLOTS: " << myGarden.size() << endl;
     }
-    void printGardenContents() {
-        //loop through the garden
-        cout << "You will need " << myGarden.size() << " plots!" << endl;
-        for (int i=0; i<myGarden.size(); i++) {
-            cout << "Plot # " << i+1 << endl;
-            myGarden[i].printPlotContents();
-        }
-    }
+   
     //getter
     vector<Plot> getMyGarden() {
         return myGarden;
@@ -173,6 +161,10 @@ int main() {
             cout << "do you want to continue? 0 for yes, 1 for no: " << endl;
             cin >> flag;
         }
-        g.printGardenContents();
+        cout << "You will need " << g.getMyGarden().size() << " plots in your garden!" << endl;
+        for (int i=0; i<g.getMyGarden().size(); i++) { //will loop through the plots
+            cout << "Plot # " << i+1 << endl;
+            (g.getMyGarden()[i]).print(); //for an individual plot, print the contents
+        }
     return 0;
 }
