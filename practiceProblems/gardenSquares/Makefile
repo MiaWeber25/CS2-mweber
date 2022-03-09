@@ -9,12 +9,5 @@ build:
 run: 
 	./$(PROGRAM_NAME)
 
-unit_tests:
-	./$(PROGRAM_NAME) test
-
-kattis_tests:
-	
-	echo "all Kattis sample tests cases passed..."
-
 clean:
 	rm -f $(PROGRAM_NAME) *.o
