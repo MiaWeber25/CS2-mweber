@@ -48,11 +48,6 @@ class Plot { //ONLY KNOWS IF THE PLOT HAS SPACE && WHAT PLANTS ARE IN THE PLOT
 
         //calculate availablSpace
         availableSpace = availableSpace - (p.getPlantSize()); 
-        for (int i=0; i<myPlot.size(); i++) {
-            cout << "Plot #" << i+1 << ": ";
-            cout << "contains: " << myPlot[i].getPlantName() << endl;
-        }
-        cout << endl;
     }
     bool violate23Rule(Plant &p) {
         if (p.getPlantSize() == 9) {
@@ -79,8 +74,9 @@ class Plot { //ONLY KNOWS IF THE PLOT HAS SPACE && WHAT PLANTS ARE IN THE PLOT
         return false;
     }
     void print() {
+        cout << "plot contains: ";
         for (int i=0; i<myPlot.size(); i++) {
-            cout << "plot contains: " << myPlot[i].getPlantName() << ", ";
+            cout << myPlot[i].getPlantName() << ", ";
         }
         cout << endl;
     }
@@ -97,7 +93,7 @@ class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MOR
     vector<Plot> myGarden;
 
     public:
-    Plot plot;
+   // Plot plot;
     void addPlot(Plot &plot) {
         myGarden.push_back(plot);        
     }
@@ -115,9 +111,10 @@ class Garden { //ONLY KNOWS HOW MANY PLOTS ARE IN THE GARDEN && CAN ONLY ADD MOR
         //make a new plot
         Plot newPlot;
         newPlot.setAvailableSpace(16);
+        newPlot.addPlant(p); 
         addPlot(newPlot); //add a plot
         //add plant to that new plot...
-        newPlot.addPlant(p); 
+       
     }
    
     //getter

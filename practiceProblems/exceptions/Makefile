@@ -1,13 +1,5 @@
-COMPILER = g++
-COMPILER_FLAGS = -Wall -std=c++17
-PROGRAM_NAME = exceptions
-CPP_FILES = exceptions.cpp
+EXEC=StacksDemo
+SRC=Stack.cpp
 
-build:
-	$(COMPILER) $(COMPILER_FLAGS) $(CPP_FILES) -o $(PROGRAM_NAME)
-
-run:
-	./$(PROGRAM_NAME)
-
-clean:
-	rm -f $(PROGRAM_NAME) *.o
+${EXEC}:Stack.h ${SRC} ${EXEC}.cpp
+	g++ -g ${EXEC}.cpp ${SRC} -o $@
