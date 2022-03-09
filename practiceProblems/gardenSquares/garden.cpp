@@ -1,3 +1,10 @@
+/* 
+Squarefoot Gardening 
+By: Mia Weber
+March 9th, 2022
+CSCI 112
+*/
+
 #include <iostream>
 #include <vector>
 #include <math.h>
