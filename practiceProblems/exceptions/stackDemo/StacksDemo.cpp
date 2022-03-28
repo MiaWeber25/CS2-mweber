@@ -6,7 +6,8 @@
 using namespace std;
 
 int main() {
-  Stack s;
+  Stack<double> s; //because you templated the class --> tell it the data type
+  
   while (true) { //calculator implementation
     string input;
     cin >> input;
@@ -14,12 +15,12 @@ int main() {
       if (input == "+") {
         double a = s.pop();
         double b = s.pop();
-        s.push(a+b);
+        s.push(a+b); //here
 
       } else if (input == "-") {
           double a = s.pop();
           double b = s.pop();
-          s.push(b-a);
+          s.push(b-a); //here
 
       } else if (input == "#") {
           cout << s.top() << endl;
@@ -33,7 +34,7 @@ int main() {
           s.push(b/a);
       } else if (input == "sqrt") { // sqrt()
           double a = s.pop();
-          s.push(sqrt(a)); 
+          s.push(sqrt(a));
       }
       else {
         try {

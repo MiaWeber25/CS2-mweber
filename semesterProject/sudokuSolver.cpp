@@ -29,10 +29,6 @@ class Board {
         vector<string> tokens;
         vector<string> tokens2;
         string temp;
-/*
-        string inFile;
-        cout << "enter file name!!: ";
-        cin >> inFile;*/
         
         ifstream fin;
         fin.open(fileName, ios::in);
@@ -45,19 +41,40 @@ class Board {
         } 
         for (int t=0; t<line.size(); t++) {
             stringstream ss(line[t]);
-            while(getline(ss, intermediate, ',')) {
+            while(getline(ss, intermediate, ',')) { //parse with comma
                 tokens.push_back(intermediate);
             }
         }
         for (int t=0; t<tokens.size(); t++) {
             stringstream sss(tokens[t]);
-            while(getline(sss, intermediate2, ':')) {
+            while(getline(sss, intermediate2, ':')) { //parse with colon 
                 tokens2.push_back(intermediate2);
             }
         }
+       // for (int i=0; i<tokens2.size(); i++) {
+       //     cout << tokens2[i] << endl;
+       // }
+        placeGivens(tokens2);        
 
-        for (int i=0; i<tokens2.size(); i++) {
-            cout << tokens2[i] << endl;
+    }
+    void placeGivens(vector<string> & tokens2) {
+        string blockX, blockY;
+        string cellX, cellY;
+        string value;
+        for (int i=0; i<tokens2.size();) {
+            blockX = tokens2[i];
+            i++;
+            blockY = tokens2[i];
+            i++;
+            cellX = tokens2[i];
+            i++;
+            cellY = tokens2[i];
+            i++;
+            value = tokens2[i];
+            i++;
+            cout << "Block X: " << blockX << " Block Y: " << blockY << endl;
+            cout << "Cell X: " << cellX << " Cell Y: " << cellY << endl;
+            cout << "Value: " << value << endl;
         }
     }
 
