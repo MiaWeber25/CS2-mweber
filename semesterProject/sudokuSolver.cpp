@@ -51,30 +51,37 @@ class Board {
                 tokens2.push_back(intermediate2);
             }
         }
-       // for (int i=0; i<tokens2.size(); i++) {
-       //     cout << tokens2[i] << endl;
-       // }
         placeGivens(tokens2);        
 
     }
     void placeGivens(vector<string> & tokens2) {
         string blockX, blockY;
-        string cellX, cellY;
+        string spaceX, spaceY;
         string value;
         for (int i=0; i<tokens2.size();) {
             blockX = tokens2[i];
             i++;
             blockY = tokens2[i];
             i++;
-            cellX = tokens2[i];
+            //place in gameBoard
+            //gameBoard[block[blockX][blockY]][block[blockX][blockY]];
+            spaceX = tokens2[i];
             i++;
-            cellY = tokens2[i];
+            spaceY = tokens2[i];
             i++;
+
             value = tokens2[i];
             i++;
-            cout << "Block X: " << blockX << " Block Y: " << blockY << endl;
-            cout << "Cell X: " << cellX << " Cell Y: " << cellY << endl;
-            cout << "Value: " << value << endl;
+            //cout << "Block X: " << blockX << " Block Y: " << blockY << endl;
+            //cout << "Cell X: " << cellX << " Cell Y: " << cellY << endl;
+            //cout << "Value: " << value << endl;
+        }
+       // Block temp;
+        for (int i=0;i<gameBoard.size(); i++) {
+            for (int j=0; j<gameBoard.size(); j++) {
+               //  temp = gameBoard[i][j]; //this is the location of a BLOCK
+               
+            }
         }
     }
 
@@ -138,6 +145,7 @@ class Block {
 
 class Space {
     //bool isEmpty;
+    int value;
     vector<int> possibleValues; //do I want to use possible valeus, or forbidden values?? 
    // int correctValue;
 
