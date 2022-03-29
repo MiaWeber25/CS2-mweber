@@ -72,11 +72,10 @@ class Board {
 
             value = tokens2[i];
             i++;
-            //cout << "Block X: " << blockX << " Block Y: " << blockY << endl;
-            //cout << "Cell X: " << cellX << " Cell Y: " << cellY << endl;
-            //cout << "Value: " << value << endl;
+            cout << "Block X: " << blockX << " Block Y: " << blockY << endl;
+            cout << "Space X: " << spaceX << " Space Y: " << spaceY << endl;
+            cout << "Value: " << value << endl;
         }
-       // Block temp;
         for (int i=0;i<gameBoard.size(); i++) {
             for (int j=0; j<gameBoard.size(); j++) {
                //  temp = gameBoard[i][j]; //this is the location of a BLOCK
