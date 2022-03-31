@@ -33,26 +33,21 @@ class Board {
     }
   }
 
-  void addBlock(BlockID &blockID) {
-    //board[blockID.x][blockID.y] = asdkljasdf;
-    addValue(board[blockID.x][blockID.y]); //THIS IS WHAT I WANT TO GET TO WORK... or I could create a "new" block above... idk
-  }
-
-
-
 };
 
 class Block {
-  vector<vector<string>> block;
+  vector<vector<Cell>> block;
   void addValues() {
-    for (int i=0; i<block.size(); i++) {
-      for (int j=0; j<block.size(); j++) {
-        block[i][j] = "9"; //9 would be the value in a cell (STRING)
+    for(int i=0; i<block.size(); i++) {
+      for(int j=0; j<block.size(); j++) {
+        block[i][j].value = 9;
       }
     }
   }
+};
 
-  void addValue(Board &board) {
 
-  }
-};       
+class Cell {
+  public:
+  int value;
+};

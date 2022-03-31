@@ -14,8 +14,9 @@ class Space;
 void welcomeToSudoku();
 void readGivens(string&);
 void printBoard();
+Block temp;
 
-class Board {
+class Board { //Board.gameBoard[i][j] = block???
     vector<vector<Block>> gameBoard;
 
     public:
@@ -76,10 +77,16 @@ class Board {
             cout << "Space X: " << spaceX << " Space Y: " << spaceY << endl;
             cout << "Value: " << value << endl;
         }
+        //Block temp;
         for (int i=0;i<gameBoard.size(); i++) {
             for (int j=0; j<gameBoard.size(); j++) {
-               //  temp = gameBoard[i][j]; //this is the location of a BLOCK
-               
+               temp = gameBoard[i][j]; //this is the location of a BLOCK
+               for (int m=0; m<temp.block.size(); m++){
+                   for (int n=0; n<temp.block.size(); n++) {
+                        temp.block[m][n].value = 9; //NEXT ISSUE
+                        cout << "block at: " << m << ", " << n << temp.block[m][n].value << endl;
+                   }
+               }
             }
         }
     }
@@ -127,11 +134,13 @@ class Board {
 };
 
 class Block {
+    public:
     vector<vector<Space>> block;
     vector<int> neededValues; //1-9 values
 
     //constructor: 
-    Block(vector<vector<Space>> newBlock = {}) {
+    Block() {
+        vector<vector<Space>> newBlock;
         block = newBlock;
     }
 
@@ -143,6 +152,7 @@ class Block {
 };
 
 class Space {
+    public:
     //bool isEmpty;
     int value;
     vector<int> possibleValues; //do I want to use possible valeus, or forbidden values?? 
@@ -167,7 +177,7 @@ class Space {
 
 int main() {
     Board gameBoard;
-
+    Block b;
     string fileName;
     cout << "Welcome To Sudoku Solver!!" << endl;
     cout << "Please enter the name of the file with givens: ";
