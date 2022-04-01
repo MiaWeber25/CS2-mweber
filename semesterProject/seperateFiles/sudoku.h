@@ -1,22 +1,13 @@
-//CODE REFERENCE FOR PRINTBOARD(): https://stackoverflow.com/questions/48677066/printing-a-grid
-#include <vector>
+#pragma once
+
 #include <iostream>
-#include <fstream> 
-#include <sstream> 
+#include <vector>
+#include <math.h>
 #include <iomanip>
+#include <sstream>
+#include <fstream>
 
 using namespace std;
-
-//CLASS PROTOTYPES:
-//class Board;
-//class Block;
-//class Space;
-void welcomeToSudoku();
-void readGivens(string&);
-void printBoard();
-//Block temp;
-
-
 
 class Space {
     public:
@@ -44,6 +35,7 @@ class Space {
 
 
 
+
 class Block {
     public:
     vector<vector<Space>> block;
@@ -65,19 +57,20 @@ class Block {
 
 
 
+
 class Board { //Board.gameBoard[i][j] = block???
-    vector<vector<Block>> board;
+    vector<vector<Block>> gameBoard;
 
     public:
     //constructor:
     Board(vector<vector<Block>> newGameBoard = {}) {
-        board = newGameBoard;
+        gameBoard = newGameBoard;
     }
 
     void readGivens(string &fileName) {
         vector<string> line; 
         vector<string> tokens;
-        vector<int> tokens2;
+        vector<string> tokens2;
         string temp;
         
         ifstream fin;
@@ -97,26 +90,23 @@ class Board { //Board.gameBoard[i][j] = block???
         }
         for (int t=0; t<tokens.size(); t++) {
             stringstream sss(tokens[t]);
-            while(getline(sss, intermediate2, ':')) { //parse with colon
-                //stoi(intermediate2);
-                tokens2.push_back(stoi(intermediate2));
+            while(getline(sss, intermediate2, ':')) { //parse with colon 
+                tokens2.push_back(intermediate2);
             }
         }
         placeGivens(tokens2);        
 
     }
-    void placeGivens(vector<int> & tokens2) {
-        int blockX, blockY;
-        int spaceX, spaceY;
-        int value;
-        Block aBlock;
+    void placeGivens(vector<string> & tokens2) {
+        string blockX, blockY;
+        string spaceX, spaceY;
+        string value;
         for (int i=0; i<tokens2.size();) {
             blockX = tokens2[i];
             i++;
             blockY = tokens2[i];
             i++;
             //place in gameBoard
-            aBlock = board[blockX][blockY];
             //gameBoard[block[blockX][blockY]][block[blockX][blockY]];
             spaceX = tokens2[i];
             i++;
@@ -125,26 +115,18 @@ class Board { //Board.gameBoard[i][j] = block???
 
             value = tokens2[i];
             i++;
-            //place values in gameBoard
-            //gameBoard.gameBoard[blockX][blockY] = temp;
-
+            //add values into gameBoard
+            gameBoard.gameBoard[blockX][blockY] 
             cout << "Block X: " << blockX << " Block Y: " << blockY << endl;
             cout << "Space X: " << spaceX << " Space Y: " << spaceY << endl;
             cout << "Value: " << value << endl;
         }
-        //cout << "I GOT HERE" << endl;
         Block temp;
-        cout << "GETTING HERE" << endl;
-        cout << "gameBoard.size() = " << board.size() << endl;
-        for (int i=0;i<board.size(); i++) {
-            cout << "i FOR LOOP" << endl;
-            for (int j=0; j<board.size(); j++) {
-                cout << "j FOR LOOP" << endl;
-               temp = board[i][j]; //this is the location of a BLOCK
+        for (int i=0;i<gameBoard.size(); i++) {
+            for (int j=0; j<gameBoard.size(); j++) {
+               temp = gameBoard[i][j]; //this is the location of a BLOCK
                for (int m=0; m<temp.block.size(); m++){
-                   cout << "m FOR LOOP" << endl;
                    for (int n=0; n<temp.block.size(); n++) {
-                       cout << "n FOR LOOP" << endl;
                         temp.block[m][n].value = 9; //NEXT ISSUE
                         cout << "block at: " << m << ", " << n << temp.block[m][n].value << endl;
                    }
@@ -194,23 +176,3 @@ class Board { //Board.gameBoard[i][j] = block???
         return false;
     }
 };
-
-
-
-
-
-int main() {
-    Board gameBoard;
-    Block b;
-    string fileName;
-    cout << "Welcome To Sudoku Solver!!" << endl;
-    cout << "Please enter the name of the file with givens: ";
-    getline(cin, fileName);
-
-    gameBoard.readGivens(fileName);
-    int row = 9;
-    int col = 9;
-    gameBoard.printBoard(row,col);
-    return 0;
-}
-
