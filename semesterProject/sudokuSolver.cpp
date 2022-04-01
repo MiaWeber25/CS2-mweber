@@ -98,7 +98,6 @@ class Board { //Board.gameBoard[i][j] = block???
         for (int t=0; t<tokens.size(); t++) {
             stringstream sss(tokens[t]);
             while(getline(sss, intermediate2, ':')) { //parse with colon
-                //stoi(intermediate2);
                 tokens2.push_back(stoi(intermediate2));
             }
         }
@@ -116,13 +115,19 @@ class Board { //Board.gameBoard[i][j] = block???
             blockY = tokens2[i];
             i++;
             //place in gameBoard
-            aBlock = board[blockX][blockY];
+            aBlock = board[blockX][blockY]; //THIS IS THE CORRECT BLOCK THAT THE SPACE IS IN
             //gameBoard[block[blockX][blockY]][block[blockX][blockY]];
             spaceX = tokens2[i];
             i++;
             spaceY = tokens2[i];
             i++;
+            //could loop though here to see if the x and y values match, but that's more looping...
+            aBlock.block[spaceX][spaceY]; //THIS SHOULD BE ON THE RIGHT PATH TO FINDING THE CORRECT SPACE WITHIN THE BLOCK
+            /*for (int j=0; j<aBlock.block.size(); j++;) {
+                if (aBlock.block[j][9].value == spaceX && aBlock.block[j][9].value == spaceY) {
 
+                }
+            */
             value = tokens2[i];
             i++;
             //place values in gameBoard
@@ -194,8 +199,6 @@ class Board { //Board.gameBoard[i][j] = block???
         return false;
     }
 };
-
-
 
 
 
