@@ -22,7 +22,7 @@ public:
         for(j = 0; j <= 4*col; j++){
             if (j%4==2)
                 cout << i++; //cout the value of i to label the cols
-            else cout<<"  ";
+            else cout<<"   ";
         }
         cout<<endl;
         for(i = 0; i <= 2*row; i++){
@@ -34,14 +34,21 @@ public:
             {
                 if(j==0)
                     cout<<" ";
-                if(j%2==0)
+                if(j%2==0) {
                     cout<<" ";
-                else cout<<"------";
+                    //cout << "Hi ";
+                }
+                else cout<<"---------";
             }
             else{
-                if(j%2==0)
+                //cout << "HI";
+                if(j%2==0) {
                     cout<<"|";
-                else cout<<"      ";
+                    //cout <<" HI   ";
+                }
+                //cout <<" HI   ";
+               // else cout<<"         ";
+                else cout<<"   Hi    "; //use if statements to check if row and col match desired
             }
             }
             cout<<endl;
