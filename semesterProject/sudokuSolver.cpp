@@ -29,7 +29,7 @@ class Space {
         value = newValue;
     }
     //constructor: 
-    void setValue(int &newValue) {
+    void setValue(int newValue) {
         value = newValue;
     }
 
@@ -70,7 +70,7 @@ class Block {
         }
     }
 
-    Space getSpace(int &x, int &y) {
+    Space getSpace(int x, int y) {
         return (block[x][y]);
     }
 
@@ -102,11 +102,11 @@ class Board { //Board.gameBoard[i][j] = block???
         }
     }
     //getter for Board
-    Block getBlock(int &x, int &y) {
+    Block getBlock(int x, int y) {
         return (board[x][y]);
     }
 
-    void readGivens(string &fileName) {
+    vector<int> readGivens(string &fileName) {
         vector<string> line; 
         vector<string> tokens;
         vector<int> tokens2;
@@ -133,44 +133,37 @@ class Board { //Board.gameBoard[i][j] = block???
                 tokens2.push_back(stoi(intermediate2));
             }
         }
-        placeGivens(tokens2);        
+        //placeGivens(tokens2); 
+        return (tokens2);       
 
     }
-    void placeGivens(vector<int> & tokens2) {
+    void placeGivens(vector<int>  tokens2, Board &gameBoard) {
         int blockX, blockY;
         int spaceX, spaceY;
         int value;
-        Block aBlock;
         for (int i=0; i<tokens2.size();) {
             blockX = tokens2[i];
             i++;
             blockY = tokens2[i];
             i++;
-            //place in gameBoard
-            //aBlock = board[blockX][blockY]; //THIS IS THE CORRECT BLOCK THAT THE SPACE IS IN
-            //gameBoard[block[blockX][blockY]][block[blockX][blockY]];
+
             spaceX = tokens2[i];
             i++;
             spaceY = tokens2[i];
             i++;
-            //could loop though here to see if the x and y values match, but that's more looping...
-            //aBlock.block[spaceX][spaceY]; //THIS SHOULD BE ON THE RIGHT PATH TO FINDING THE CORRECT SPACE WITHIN THE BLOCK
-            /*for (int j=0; j<aBlock.block.size(); j++;) {
-                if (aBlock.block[j][9].value == spaceX && aBlock.block[j][9].value == spaceY) {
-
-                }
-            */
+        
             value = tokens2[i];
             i++;
-            //place values in gameBoard
-            //gameBoard.gameBoard[blockX][blockY] = temp;
-            board[blockX][blockY].getSpace(spaceX, spaceY).setValue(value);
 
+            cout << "GETTING HERE" << endl; //WORKS
+            board[blockX][blockY].getSpace(spaceX, spaceY).setValue(value); //segmentation fault here
+            cout << "GETTING HERE TOO" << endl; //FAILS
+ 
             cout << "Block X: " << blockX << " Block Y: " << blockY << endl;
             cout << "Space X: " << spaceX << " Space Y: " << spaceY << endl;
             cout << "Value: " << value << endl;
         }
-        //cout << "I GOT HERE" << endl;
+        /*cout << "I GOT HERE" << endl;
         Block temp;
         cout << "GETTING HERE" << endl;
         cout << "board.size() = " << board.size() << endl;
@@ -189,6 +182,7 @@ class Board { //Board.gameBoard[i][j] = block???
                }
             }
         }
+    }*/
     }
 
     void printBoard(int &row, int &col) {
@@ -242,10 +236,12 @@ int main() {
     cout << "Please enter the name of the file with givens: ";
     getline(cin, fileName);
 
-    gameBoard.readGivens(fileName);
+   // gameBoard.readGivens(fileName);
     int row = 9;
     int col = 9;
     gameBoard.printBoard(row,col);
+    gameBoard.placeGivens(gameBoard.readGivens(fileName),gameBoard);
+   
     return 0;
 }
 
