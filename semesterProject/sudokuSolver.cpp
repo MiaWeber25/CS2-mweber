@@ -19,14 +19,19 @@ void printBoard();
 
 
 class Space {
+    int value;
     public:
     //bool isEmpty;
-    int value;
+    //int value;
     vector<int> possibleValues; //do I want to use possible valeus, or forbidden values?? 
    // int correctValue;
-
+    Space(int newValue=0) {
+        value = newValue;
+    }
     //constructor: 
-    
+    void setValue(int &newValue) {
+        value = newValue;
+    }
 
     void placeNumber() {
 
@@ -45,14 +50,28 @@ class Space {
 
 
 class Block {
+    //private:
     public:
     vector<vector<Space>> block;
     vector<int> neededValues; //1-9 values
-
+   
+    //public:
     //constructor: 
     Block() {
         vector<vector<Space>> newBlock;
         block = newBlock;
+        for (int i=0; i<3; i++) {
+            vector<Space> newRow;
+            for (int j=0; j<3; j++) {
+                Space newSpace;
+                newRow.push_back(newSpace);
+            }
+            newBlock.push_back(newRow);
+        }
+    }
+
+    Space getSpace(int &x, int &y) {
+        return (block[x][y]);
     }
 
     bool isComplete() {
@@ -70,8 +89,21 @@ class Board { //Board.gameBoard[i][j] = block???
 
     public:
     //constructor:
-    Board(vector<vector<Block>> newGameBoard = {}) {
-        board = newGameBoard;
+    Board() {
+        vector<vector<Block>> newBoard;
+        board = newBoard;
+        for (int i=0; i<3; i++) {
+            vector<Block> newRow;
+            for (int j=0; j<3; j++) {
+                Block newBlock;
+                newRow.push_back(newBlock);
+            }
+            newBoard.push_back(newRow);
+        }
+    }
+    //getter for Board
+    Block getBlock(int &x, int &y) {
+        return (board[x][y]);
     }
 
     void readGivens(string &fileName) {
@@ -115,14 +147,14 @@ class Board { //Board.gameBoard[i][j] = block???
             blockY = tokens2[i];
             i++;
             //place in gameBoard
-            aBlock = board[blockX][blockY]; //THIS IS THE CORRECT BLOCK THAT THE SPACE IS IN
+            //aBlock = board[blockX][blockY]; //THIS IS THE CORRECT BLOCK THAT THE SPACE IS IN
             //gameBoard[block[blockX][blockY]][block[blockX][blockY]];
             spaceX = tokens2[i];
             i++;
             spaceY = tokens2[i];
             i++;
             //could loop though here to see if the x and y values match, but that's more looping...
-            aBlock.block[spaceX][spaceY]; //THIS SHOULD BE ON THE RIGHT PATH TO FINDING THE CORRECT SPACE WITHIN THE BLOCK
+            //aBlock.block[spaceX][spaceY]; //THIS SHOULD BE ON THE RIGHT PATH TO FINDING THE CORRECT SPACE WITHIN THE BLOCK
             /*for (int j=0; j<aBlock.block.size(); j++;) {
                 if (aBlock.block[j][9].value == spaceX && aBlock.block[j][9].value == spaceY) {
 
@@ -132,6 +164,7 @@ class Board { //Board.gameBoard[i][j] = block???
             i++;
             //place values in gameBoard
             //gameBoard.gameBoard[blockX][blockY] = temp;
+            board[blockX][blockY].getSpace(spaceX, spaceY).setValue(value);
 
             cout << "Block X: " << blockX << " Block Y: " << blockY << endl;
             cout << "Space X: " << spaceX << " Space Y: " << spaceY << endl;
@@ -140,7 +173,7 @@ class Board { //Board.gameBoard[i][j] = block???
         //cout << "I GOT HERE" << endl;
         Block temp;
         cout << "GETTING HERE" << endl;
-        cout << "gameBoard.size() = " << board.size() << endl;
+        cout << "board.size() = " << board.size() << endl;
         for (int i=0;i<board.size(); i++) {
             cout << "i FOR LOOP" << endl;
             for (int j=0; j<board.size(); j++) {
@@ -150,8 +183,8 @@ class Board { //Board.gameBoard[i][j] = block???
                    cout << "m FOR LOOP" << endl;
                    for (int n=0; n<temp.block.size(); n++) {
                        cout << "n FOR LOOP" << endl;
-                        temp.block[m][n].value = 9; //NEXT ISSUE
-                        cout << "block at: " << m << ", " << n << temp.block[m][n].value << endl;
+                        //temp.block[m][n].setValue(9); //NEXT ISSUE
+                        //cout << "block at: " << m << ", " << n << temp.block[m][n]. << endl;
                    }
                }
             }
@@ -204,7 +237,6 @@ class Board { //Board.gameBoard[i][j] = block???
 
 int main() {
     Board gameBoard;
-    Block b;
     string fileName;
     cout << "Welcome To Sudoku Solver!!" << endl;
     cout << "Please enter the name of the file with givens: ";
@@ -216,4 +248,6 @@ int main() {
     gameBoard.printBoard(row,col);
     return 0;
 }
+
+
 
