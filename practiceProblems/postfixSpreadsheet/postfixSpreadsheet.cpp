@@ -1,11 +1,45 @@
 #include <iostream>
 #include <fstream>
+#include <stack>
 
 using namespace std;
-//function prototype:
-char printMainMenu();
-void createNew(Sheet);
-char printCellMenu();
+
+template <class T>
+class Cell {
+protected:
+  T value;
+public:
+  Cell(T &newValue) { //CONSTRUCTOR
+      newValue = value;
+  }
+  //print value, manipulate value, delete value, add value???
+  virtual bool correctCellType() = 0; //implement seperatly in each class
+};
+
+class formulaCell: public Cell<T> { //cell that takes a formula
+  string formula;
+public:
+  formulaCell(string &newFormula) { //CONSTRUCTOR
+    formula = newFormula;
+  }
+  //ensure that it begins with =, perform opperation,(delete value, add value, print value all from Cell parent class)
+  bool correctCellType() {
+    //check to make sure that the string begins with '='
+  }
+};
+
+class headerCell: public Cell <T> {
+  string header;
+public:
+  //can't think of any additional functionality that it needs...
+  bool correctCellType() {
+    //check to make sure value for cell is a string
+  }
+};
+
+
+
+
 
 class Sheet {
     //2D array of user specified type
@@ -41,10 +75,10 @@ public:
                 else cout<<"---------";
             }
             else{
-               
+
                 if(j%2==0) {
                     cout<<"|";
-                    
+
                 }
                 //else if
 
@@ -69,6 +103,11 @@ public:
 };
 
 
+char printMainMenu();
+void createNew(Sheet &);
+char printCellMenu();
+
+
 int main() {
     Sheet s;
     //PRINT MAIN MENU
@@ -78,7 +117,7 @@ int main() {
             break;
         case '2': //open existing spreadsheet
             break;
-        default: 
+        default:
             cout << "Please enter a valid choice." << endl;
     }
 
@@ -110,11 +149,11 @@ char printMainMenu() {
     cout << "Plese select a menu option: " << endl << "[1] Create a new spreadsheet" << endl << "[2] Open an existing spreadsheet" << endl;
     cin >> choice;
     return (choice);
-    
+
 }
 
 //function to create a new spreadsheet
-void createNew(Sheet s) {
+void createNew(Sheet &s) {
     //get info to save the spreadsheet
     string fileName;
     ofstream o;
@@ -130,6 +169,7 @@ void createNew(Sheet s) {
     s.setSize(temp, temp2);
     s.printContents();
 }
+
 
 char printCellMenu() { //print the menu for actions on a cell
     char choice;
