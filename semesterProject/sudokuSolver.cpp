@@ -58,16 +58,20 @@ class Block {
     //public:
     //constructor: 
     Block() {
-        vector<vector<Space>> newBlock;
-        block = newBlock;
+       // vector<vector<Space>> newBlock;
+        //block = newBlock;
         for (int i=0; i<3; i++) {
             vector<Space> newRow;
             for (int j=0; j<3; j++) {
                 Space newSpace;
                 newRow.push_back(newSpace);
             }
-            newBlock.push_back(newRow);
+            block.push_back(newRow);
+           
+            //cout << "i created the block" << endl;
         }
+        cout << "newBlock.size() = " << block.size() << endl;
+        //block=newBlock;
     }
 
     Space getSpace(int x, int y) {
@@ -90,16 +94,19 @@ class Board { //Board.gameBoard[i][j] = block???
     public:
     //constructor:
     Board() {
-        vector<vector<Block>> newBoard;
-        board = newBoard;
+        //vector<vector<Block>> newBoard;
+        //board = newBoard;
         for (int i=0; i<3; i++) {
             vector<Block> newRow;
             for (int j=0; j<3; j++) {
                 Block newBlock;
                 newRow.push_back(newBlock);
             }
-            newBoard.push_back(newRow);
+            board.push_back(newRow);
+            //cout << "I CREATED THE NEW ROW" << endl;
         }
+        //board = newBoard;
+        //cout << "newBoard.size() = " << newBoard.size() << endl;
     }
     //getter for Board
     Block getBlock(int x, int y) {
@@ -156,6 +163,8 @@ class Board { //Board.gameBoard[i][j] = block???
             i++;
 
             cout << "GETTING HERE" << endl; //WORKS
+            //need to add values so that board.size() doesn't return 0 (constructors) --> not working
+            cout << "board.size() = " << board.size() << endl;
             board[blockX][blockY].getSpace(spaceX, spaceY).setValue(value); //segmentation fault here
             cout << "GETTING HERE TOO" << endl; //FAILS
  
@@ -163,11 +172,11 @@ class Board { //Board.gameBoard[i][j] = block???
             cout << "Space X: " << spaceX << " Space Y: " << spaceY << endl;
             cout << "Value: " << value << endl;
         }
-        /*cout << "I GOT HERE" << endl;
-        Block temp;
-        cout << "GETTING HERE" << endl;
+        //out << "I GOT HERE" << endl;
+        //Block temp;
+       // cout << "GETTING HERE" << endl;
         cout << "board.size() = " << board.size() << endl;
-        for (int i=0;i<board.size(); i++) {
+        /*for (int i=0;i<board.size(); i++) {
             cout << "i FOR LOOP" << endl;
             for (int j=0; j<board.size(); j++) {
                 cout << "j FOR LOOP" << endl;
