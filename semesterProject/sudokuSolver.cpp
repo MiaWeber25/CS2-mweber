@@ -83,6 +83,10 @@ class Block {
         return false;
     }
 
+    void printBlock() {
+        
+    }
+
 };
 
 
@@ -162,36 +166,15 @@ class Board { //Board.gameBoard[i][j] = block???
             value = tokens2[i];
             i++;
 
-            cout << "GETTING HERE" << endl; //WORKS
+            cout << "GETTING HERE" << endl;
             //need to add values so that board.size() doesn't return 0 (constructors) --> not working
-            cout << "board.size() = " << board.size() << endl;
             board[blockX][blockY].getSpace(spaceX, spaceY).setValue(value); //segmentation fault here
-            cout << "GETTING HERE TOO" << endl; //FAILS
+            cout << "GETTING HERE TOO" << endl; 
  
             cout << "Block X: " << blockX << " Block Y: " << blockY << endl;
             cout << "Space X: " << spaceX << " Space Y: " << spaceY << endl;
             cout << "Value: " << value << endl;
         }
-        //out << "I GOT HERE" << endl;
-        //Block temp;
-       // cout << "GETTING HERE" << endl;
-        cout << "board.size() = " << board.size() << endl;
-        /*for (int i=0;i<board.size(); i++) {
-            cout << "i FOR LOOP" << endl;
-            for (int j=0; j<board.size(); j++) {
-                cout << "j FOR LOOP" << endl;
-               temp = board[i][j]; //this is the location of a BLOCK
-               for (int m=0; m<temp.block.size(); m++){
-                   cout << "m FOR LOOP" << endl;
-                   for (int n=0; n<temp.block.size(); n++) {
-                       cout << "n FOR LOOP" << endl;
-                        //temp.block[m][n].setValue(9); //NEXT ISSUE
-                        //cout << "block at: " << m << ", " << n << temp.block[m][n]. << endl;
-                   }
-               }
-            }
-        }
-    }*/
     }
 
     void printBoard(int &row, int &col) {
