@@ -16,7 +16,7 @@ public:
   virtual bool correctCellType() = 0; //implement seperatly in each class
 };
 
-class formulaCell: public Cell<T> { //cell that takes a formula
+class formulaCell/*: public Cell<T> */{ //cell that takes a formula
   string formula;
 public:
   formulaCell(string &newFormula) { //CONSTRUCTOR
@@ -28,7 +28,7 @@ public:
   }
 };
 
-class headerCell: public Cell <T> {
+class headerCell/*: public Cell <T>*/ {
   string header;
 public:
   //can't think of any additional functionality that it needs...

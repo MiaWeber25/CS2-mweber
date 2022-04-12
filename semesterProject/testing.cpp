@@ -1,71 +1,65 @@
 #include <iostream>
-#include <math.h>
 
 using namespace std;
 
-void printSpace(int &, int &);
-void printSpaceValue();
-void printBoard();
-void printBlock();
+void printContents();
+void printValue();
+
 
 int main() {
-  printBoard();
-  //printSpace(row,col);
+  printContents();
   return 0;
 }
-
-void printSpace(int &row, int &col) {
-  for (int m=0; m<=row; m++) {
-    cout << "beginning m: " << m << endl;
-    for (int n=0; n<=col; n++) {
-      cout << "beginning n: " << n << endl;
-      cout<<" ";
-      int i=1,j;
-      for(j = 0; j <= 4*n; j++){ //4*col
+    
+    
+    
+    void printContents(/*string &fileName,*/) { //print the contents of the spreadhsheet
+        int row, col;
+        row = 3;
+        col = 3;
         cout<<" ";
-      }
-      cout<<endl;
-      for(i = 0; i <= 2*m; i++){ //2*row
-        if(i%2!=0)
-        cout << " ";
-        for(j = 0; j <= 2*n; j++){ //2*col
-          if(i%2==0) {
-            if(j==0)
-              cout<<" ";
-            if(j%2==0)
-              cout<<" ";
-            else cout<<"---";
-          }
-          else{
-            if(j%2==0)
-              cout<<"|";
-            //else cout<<" 6 "; //THIS IS THE SPACE FOR THE VALUE
-            else printSpaceValue();
-          }
+        int i=1,j;
+        for(j = 0; j <= 4*col; j++){
+            if (j%4==2)
+              cout<<"   ";
         }
         cout<<endl;
-      }
-      cout<<" ";
-      for(j = 0, i = 1; j <= 4*n; j++){ //4*col
+        for(i = 0; i <= 2*row; i++){
+            if(i%2!=0)
+                //cout << " ";
+                cout << (char)(i/2); 
+            for(j = 0; j <= 2*col; j++){
+            if(i%2==0)
+            {
+                if(j==0)
+                    cout<<" ";
+                if(j%2==0) {
+                    cout<<" ";
+                }
+                else cout<<"---------";
+            }
+            else{
+
+                if(j%2==0) {
+                    cout<<"|";
+
+                }
+                //else cout<<"   Hi    "; //use if statements to check if row and col match desired
+                  else printValue();
+            }
+            }
+            cout<<endl;
+        }
         cout<<" ";
-      }
-      cout<<endl;
-      }
-  }
-}
+        for(j = 0, i = 1; j <= 4*col; j++){
 
-void printSpaceValue() {
-  cout <<" 6 ";
-}
+            cout<<" ";
+        }
+        cout<<endl;
+    }
 
 
-void printBlock(int &row, int &col) {
-  printSpace(row,col);
-}
 
-void printBoard() {
-  int row, col;
-  row = 3;
-  col =3;
-  printBlock(row, col);
+void printValue() {
+  
 }
