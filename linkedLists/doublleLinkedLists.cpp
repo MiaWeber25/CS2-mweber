@@ -6,11 +6,11 @@ class DLNode {
   double data;
   DLNode *prev, *next;
 public:
-  double getData() {
+  double getData() const {
     return data;
   }
 
-  DLNode * getNext() {
+  DLNode * getNext() const {
     return next;
   }
 
@@ -91,9 +91,14 @@ public:
     /* THIS IS A SHALLOW COPY - > it is the default.
     head = other.head;
     tail=other.tail
+    copy constructor: (like type casting a variable. that's also a copy constructor)
     */
-    while (...)
-      push(other.front());
+    //this is the deep copy. creates new houses for the values. shallow copies just create pointers to the origional houses
+    DLNode *p=other.head;
+    while (p!=NULL) { //while not at the end of the list
+      push(p->getData());
+      p=p->getNext();
+    }
   }
 
   void pop() {
@@ -127,8 +132,8 @@ public:
     return (head == NULL);
   }
   ~Queue() {
-    //deconstructor to free up the data. Gets called once the members are no longer in scope
-    //destructor also gets invoked when you go to delete an object
+    //deconstructor to free up the data. Gets invoked once the members are no longer in scope
+    //destructor also gets invoked when you go to delete an object (this means that you don't want to delete AND have it go out of scope --> copy type important here)
     //if (!empty()) p->cleanUp();
     while (!empty())
       pop();
@@ -142,11 +147,20 @@ int main() {
   //for (auto it=k.rbegin(); it!=k.rend(); it++) {
   //  cout << *it << ' ';
   //}
-  Queue q;
-  q.push(10.0);
-  q.push(12.0);
-  q.pop();
-  cout << q.front() << endl;
+  Queue *q = new Queue;
+  //Queue *p = new Queue(*q); //this is explicitly calling the copy constructor (after dereferencing q)
+  Queue p;
+
+  q->push(10.0);
+  q->push(12.0);
+  p=*q; //calls copy constructor implicitly
+  q->pop();
+  cout << q->front() << endl;
+  //delete p; can't delete p when implicitly calling copy constructor
+  q->pop();
+  delete q; //can still delete q
+  cout << p.front() << endl;
+
 //  q.pop();
 
 

@@ -5,6 +5,7 @@
 #include <sstream> 
 #include <iomanip>
 #include <algorithm>
+#include <iterator>
 
 using namespace std;
 
@@ -60,6 +61,8 @@ class Block {
     public:
     vector<vector<Space>> block;
     vector<int> forbidBlockVals; //1-9 values
+    vector<int> rowValues;
+    vector<int> colValues;
     int totalValues;
 
    
@@ -89,34 +92,45 @@ class Block {
         
     }
 
-    vector<int> calculateBValues() {
+    vector<int> calculateBValues(/*int i, int j*/) {
         //beginning of program --> forbidBlockVals == none
         //place the givens
         //loop through the block and add values to forbidBlockVals
         for (int i=0; i<block.size(); i++) {
             for (int j=0; j<block.size(); j++) {
+               cout << "i = " << i << " " << "j = " << j << endl;
                 if (block[i][j].getValue()!=0) //don't need to push back the 0 - insignificant for this... (just means no value is placed yet)
                     forbidBlockVals.push_back(block[i][j].getValue());
             }
         }
+        cout << "FORBIDDEN BLOCK VALS: " << endl;
+        for (int i=0; i<forbidBlockVals.size(); i++) {
+            cout << forbidBlockVals[i] << endl;
+        }
         return forbidBlockVals;
     }
 
-    vector<int> getCol(int col) { //pass the value of y for block location "l"
-        vector<int> colValues;
+    void getCol(int col) { //pass the value of y for block location "l"
+        //vector<int> colValues;
         //check within the block
         for (int i=0; i<3; i++) {
             colValues.push_back(block[i][col].getValue());
         }
-        return colValues;
+        cout << "COL VALUES: " << endl;
+        for (int i=0; i<colValues.size(); i++) {
+            cout << colValues[i] << endl;
+        }
     }
 
-    vector<int> getRow(int row) { //pass the value of x for block location "k"
-        vector<int> rowValues;
+    void getRow(int row) { //pass the value of x for block location "k"
+        //vector<int> rowValues;
         for (int i=0; i<3; i++) {
             rowValues.push_back(block[row][i].getValue());
         }
-        return rowValues;
+        cout << "ROW VALUES: " << endl;
+        for (int i=0; i<rowValues.size(); i++) {
+            cout << rowValues[i] << endl;
+        }
     }
 
 };
@@ -172,7 +186,6 @@ class Board {
                 tokens2.push_back(stoi(intermediate2));
             }
         }
-        //placeGivens(tokens2); 
         return (tokens2);       
 
     }
@@ -202,49 +215,63 @@ class Board {
    // cout << board[1][1].block[1][0].getValue() << endl;
     }
 
-    vector<int> checkBoardCol(int col) { 
-        vector<int> forbiddenColValues; //might now need this...
+    bool checkBoardCol(int col, int value) { 
         for (int i=0; i<3; i++) {
             board[i][col].getCol(col);
-        }
-
-        return forbiddenColValues;
-    }
-
-    vector<int> checkBoardRow(int row) {
-        vector<int> forbiddenRowValues;
-        for (int i=0; i<3; i++) {
-            board[row][i].getRow(row);
-        }
-        return forbiddenRowValues;
-    }
-
-    void calculateForbidBlockVals() { //might have to redo this a little bit so that this function returns vector<int> for checking function below
-        for (int i=0; i<board.size(); i++) {
-            for (int j=0; j<board.size(); j++) {
-                board[i][j].calculateBValues();
+            for (int k=0; k<board[i][col].colValues.size(); k++) {
+                cout << "forbidden COL values: " << board[i][col].colValues[k] << endl;
+                if (board[i][col].colValues[k] == value) {
+                    //value is in the vector = VIOLATION!
+                    return true;
+                }
             }
         }
+        return false;
     }
 
+    bool checkBoardRow(int row, int value) {
+        for (int i=0; i<3; i++) {
+            board[row][i].getRow(row); //returns a vector with the numbers in row for that block
+            for (int k=0; k<board[row][i].rowValues.size(); k++) {
+                cout << "forbidden ROW values: " << board[row][i].rowValues[k] << endl;
+                if(board[row][i].rowValues[k] == value) {
+                    //value is in the vector = VIOLATION!
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
-    bool checkViolation(int value) {
-        //check Row, col, block violation with forbidVals vectors
-        iterator it;
-        it = find(checkBoardRow(4).begin(), checkBoardRow(4).end(), 4); //4 needs to be changed out later
-        if (it!= checkBoardRow(4).end()) {
-            //value is present VIOLATION IS TRUE
+    bool checkForbidBlockVals(int i, int j, int value) { 
+        board[i][j].calculateBValues(/*i, j*/);
+        for (int k=0; k<board[i][j].forbidBlockVals.size(); k++) {
+            cout << "forbidden block values: " << board[i][j].forbidBlockVals[k] << endl;
+            if (board[i][j].forbidBlockVals[k] == value) {
+                //value is in the vector = VIOLATION!
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool checkViolation(int row, int col, int value) {
+        if(checkForbidBlockVals(row, col, value)==true) {
+            //VIOLATED! Cannot place a block here
+            cout << "VIOLATED!" << endl;
+            return true; //might want to call another function here or something... it could be important to determine why this number can't go here? ie: what kind of violation to backtrace steps? or too much work for function later... idk
+        }
+        if (checkBoardRow(row, value)==true) {
+            cout << "VIOLATED!" << endl;
             return true;
         }
-        it = find(checkBoardCol(4).begin(), checkBoardCol(4).end(), 4);
-        if (it!= checkBoardCol(4).end()) {
-            //value is not present VIOLATION IS FALSE
-            return false;
+        if (checkBoardCol(col, value)==true) {
+            cout << "VIOLATED!" << endl;
+            return true;
         }
-        //NEED TO DO THE SAME THING FOR CHECK BOARD FUNCTION (might need some small adjustments)
-
+        cout << "NO VIOLATION!" << endl;
+        return false;
     }
-
 
     /*void printBoard(int &row, int &col) {
         cout<<" ";
@@ -282,25 +309,9 @@ class Board {
     }*/
 
     void solve(int tryValue) {
-        Space currentSpace;
-        //vector<int> availableValues; = space.possibleValues<- vector in space
-        for(int i=0; i<board.size(); i++) {
-            for (int j=0; j<board.size(); j++) {
-                //board[i][j].block[1][0].setPossibilities();
-                calculateForbidBlockVals();
-                //calculate illegal values, remove them from available values and place the first available value in list then call checkBlock(). Then keep going CALCULATE THEN LOOP
-                if (validBlock(board[i][j])==false) {
-                    solve(2); //try to solve using the next value in possibleValues... 
-                }
-            }
-        }
+
 
     }
-    /*bool validBlock(Block &b) {
-        //check row, col, block
-        //return true if doesn't violate, returns false if it does...
-        return true;
-    }*/
 
     bool isSolved() {
 
@@ -338,8 +349,7 @@ int main() {
     //gameBoard.printBoard(row,col);
 
     gameBoard.placeGivens(gameBoard.readGivens(fileName),gameBoard);
-    gameBoard.calculateForbidBlockVals();
-    //gameBoard.checkForbidRowVals();
+    gameBoard.checkViolation(2,0,2);
     cout << "best block value = " << gameBoard.findBestBlock().totalValues <<endl;
     //gameBoard.findBestBlock();
 
