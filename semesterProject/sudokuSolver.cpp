@@ -3,40 +3,26 @@
 #include <iostream>
 #include <fstream> 
 #include <sstream> 
-#include <iomanip>
+//#include <iomanip> //MIGHT NEED THIS LATER FOR OUTPUT FORMATTING
 #include <algorithm>
-#include <iterator>
+//include <iterator> //MIGHT NOT NEED THIS BECAUSE I FOUND A NEW WAY TO SEARCH FOR VALUES IN VECTORS
 
 using namespace std;
-
-//CLASS PROTOTYPES:
-//class Board;
-//class Block;
-//class Space;
-void welcomeToSudoku();
-void readGivens(string&);
-void printBoard();
-//Block temp;
-
 
 
 class Space {
     int value;
-    public:
-    //bool isEmpty;
-    //int value;
-    //vector<int> possibleValues; //do I want to use possible valeus, or forbidden values?? 
-    vector<int> forbiddenValues;
-   // int correctValue;
-    Space(int newValue=0) {
+public:
+    vector<int> forbiddenValues; //needs to be private!
+
+    Space(int newValue=0) { //constructor
         value = newValue;
     }
-    //setter
-    void setValue(int newValue) {
+
+    void setValue(int newValue) { //setter for value
         value = newValue;
     }
-    //getter
-    int getValue() {
+    int getValue() { //getter for value
         return value;
     }
 
@@ -57,18 +43,14 @@ class Space {
 
 
 class Block {
-    //private:
-    public:
-    vector<vector<Space>> block;
-    vector<int> forbidBlockVals; //1-9 values
-    vector<int> rowValues;
-    vector<int> colValues;
-    int totalValues;
+public:
+    vector<vector<Space>> block; //needs to be private
+    vector<int> forbidBlockVals; //needs to be private
+    vector<int> rowValues; //needs to be private
+    vector<int> colValues; //needs to be private
+    int totalValues; //needs to be private
 
-   
-    //public:
-    //constructor: 
-    Block() {
+    Block() { //constructor
         totalValues = 0;
         for (int i=0; i<3; i++) {
             vector<Space> newRow;
@@ -80,11 +62,11 @@ class Block {
         }
     }
 
-    Space getSpace(int x, int y) {
+    Space getSpace(int x, int y) { //getter for the space at index [x][y]
         return (block[x][y]);
     }
 
-    bool isComplete() {
+    bool isComplete() { //are there 9 values in the block?
         return (totalValues == 9);
     }
 
@@ -92,10 +74,7 @@ class Block {
         
     }
 
-    vector<int> calculateBValues(/*int i, int j*/) {
-        //beginning of program --> forbidBlockVals == none
-        //place the givens
-        //loop through the block and add values to forbidBlockVals
+    vector<int> calculateBValues() { //function to calculate the values that are not allowed in a block
         for (int i=0; i<block.size(); i++) {
             for (int j=0; j<block.size(); j++) {
                cout << "i = " << i << " " << "j = " << j << endl;
@@ -110,9 +89,7 @@ class Block {
         return forbidBlockVals;
     }
 
-    void getCol(int col) { //pass the value of y for block location "l"
-        //vector<int> colValues;
-        //check within the block
+    void getCol(int col) { //get the values in the desired col (passed to function)
         for (int i=0; i<3; i++) {
             colValues.push_back(block[i][col].getValue());
         }
@@ -122,8 +99,7 @@ class Block {
         }
     }
 
-    void getRow(int row) { //pass the value of x for block location "k"
-        //vector<int> rowValues;
+    void getRow(int row) { //get the values in the desired row (passed to function)
         for (int i=0; i<3; i++) {
             rowValues.push_back(block[row][i].getValue());
         }
@@ -140,11 +116,10 @@ class Block {
 
 class Board { 
     vector<vector<Block>> board;
-    public:
-    vector<int> forbidRowVals;
-    vector<int> forbidColVals;
-    //constructor:
-    Board() {
+public:
+    vector<int> forbidRowVals; //needs to be private
+    vector<int> forbidColVals; //needs to be private
+    Board() { //constructor
         for (int i=0; i<3; i++) {
             vector<Block> newRow;
             for (int j=0; j<3; j++) {
@@ -154,12 +129,12 @@ class Board {
             board.push_back(newRow);
         }
     }
-    //getter for Board
-    Block getBlock(int x, int y) {
+
+    Block getBlock(int x, int y) { //getter for a block at index [x][y]
         return (board[x][y]);
     }
 
-    vector<int> readGivens(string &fileName) {
+    vector<int> readGivens(string &fileName) { //function to read in givens from a file
         vector<string> line; 
         vector<string> tokens;
         vector<int> tokens2;
@@ -189,7 +164,7 @@ class Board {
         return (tokens2);       
 
     }
-    void placeGivens(vector<int>  tokens2, Board &gameBoard) {
+    void placeGivens(vector<int>  tokens2, Board &gameBoard) { //use the givens read in function above to populate the board
         int blockX, blockY;
         int spaceX, spaceY;
         int value;
@@ -215,7 +190,7 @@ class Board {
    // cout << board[1][1].block[1][0].getValue() << endl;
     }
 
-    bool checkBoardCol(int col, int value) { 
+    bool checkBoardCol(int col, int value) { //is the value I'm trying to place in a space already present in the col?
         for (int i=0; i<3; i++) {
             board[i][col].getCol(col);
             for (int k=0; k<board[i][col].colValues.size(); k++) {
@@ -229,7 +204,7 @@ class Board {
         return false;
     }
 
-    bool checkBoardRow(int row, int value) {
+    bool checkBoardRow(int row, int value) { //is the value I'm trying to palce in a space already present in the row?
         for (int i=0; i<3; i++) {
             board[row][i].getRow(row); //returns a vector with the numbers in row for that block
             for (int k=0; k<board[row][i].rowValues.size(); k++) {
@@ -243,7 +218,7 @@ class Board {
         return false;
     }
 
-    bool checkForbidBlockVals(int i, int j, int value) { 
+    bool checkForbidBlockVals(int i, int j, int value) { //is the value I'm trying to place in a space already present in the block?
         board[i][j].calculateBValues(/*i, j*/);
         for (int k=0; k<board[i][j].forbidBlockVals.size(); k++) {
             cout << "forbidden block values: " << board[i][j].forbidBlockVals[k] << endl;
@@ -255,7 +230,7 @@ class Board {
         return false;
     }
 
-    bool checkViolation(int row, int col, int value) {
+    bool checkViolation(int row, int col, int value) { //call the function above and determine if placing the value would violate game rules 
         if(checkForbidBlockVals(row, col, value)==true) {
             //VIOLATED! Cannot place a block here
             cout << "VIOLATED!" << endl;
@@ -318,7 +293,7 @@ class Board {
         return false;
     }
 
-    Block findBestBlock() { //function to find the block with the fewest empty spaces
+    Block findBestBlock() { //function to find the block with the fewest empty spaces. Which blocks should I solve first? this tells you that
         Block currentBest;
         int best = 0;
         for (int i=0; i<board.size(); i++) {
@@ -338,20 +313,21 @@ class Board {
 
 
 int main() {
-    Board gameBoard;
+    Board gameBoard; //create a gameBoard
+    //read in file information 
     string fileName;
     cout << "Welcome To Sudoku Solver!!" << endl;
     cout << "Please enter the name of the file with givens: ";
     getline(cin, fileName);
 
-    //int row = 9;
+    //int row = 9; THIS IS ALL INFO ON BOARDPRINT FUNCTION WHICH NEEDS HELP LATER
     //int col = 9;
     //gameBoard.printBoard(row,col);
 
+    //place the givens
     gameBoard.placeGivens(gameBoard.readGivens(fileName),gameBoard);
-    gameBoard.checkViolation(2,0,2);
-    cout << "best block value = " << gameBoard.findBestBlock().totalValues <<endl;
-    //gameBoard.findBestBlock();
+    gameBoard.checkViolation(2,0,2); //calling this here for testing purposes.
+    cout << "best block value = " << gameBoard.findBestBlock().totalValues <<endl; //calling this here for testing purposes.
 
     return 0;
 }
