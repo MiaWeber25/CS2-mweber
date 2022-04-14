@@ -7,8 +7,7 @@ void printNewLine();
 
 
 void printSpace() {
-    setw(2);
-    setfill("--"); 
+    cout << setw(1) << "--"; 
 
 
 }
