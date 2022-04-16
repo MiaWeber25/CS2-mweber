@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream> 
 #include <sstream> 
+#include <math.h>
 //#include <iomanip> //MIGHT NEED THIS LATER FOR OUTPUT FORMATTING
 #include <algorithm>
 //include <iterator> //MIGHT NOT NEED THIS BECAUSE I FOUND A NEW WAY TO SEARCH FOR VALUES IN VECTORS
@@ -15,8 +16,9 @@ class Space {
     //vector<int> forbiddenValues;
     bool isGiven;
 public:
-    Space(int newValue=0) { //constructor
+    Space(int newValue=0, bool newIsGiven = false) { //constructor
         value = newValue;
+        isGiven = newIsGiven;
     }
 
     void setValue(int newValue) { //setter for value
@@ -24,6 +26,10 @@ public:
     }
     int getValue() { //getter for value
         return value;
+    }
+
+    void setIsGiven(bool theBool) {
+        isGiven = theBool;
     }
 
     /*void setForbiddenValue(int value) { //setter for forbiddenValue
@@ -143,7 +149,6 @@ public:
         }
         return rowValues;
     }
-
 };
 
 
@@ -220,6 +225,7 @@ public:
             //cout << "Value: " << value << endl;
             board[blockX][blockY].block[spaceX][spaceY].setValue(value);
             board[blockX][blockY].totalValues++; //incremement tracker for totalValues
+            board[blockX][blockY].block[spaceX][spaceY].setIsGiven(true);
         }
     //cout << "value at Board[1][1]Block[1][0] which should be 8" << endl;
    // cout << board[1][1].block[1][0].getValue() << endl;
@@ -227,10 +233,13 @@ public:
 
     bool checkColViolation(int bCol, int sCol, int value) { //is the value I'm trying to place in a space already present in the col?
         for (int i=0; i<3; i++) {
-            if (board[i][bCol].getCol(sCol)[i] == value) {
-                cout << "VIOLATION!";
-                return true;
+            for (int j=0; j<3; j++) {
+                if (board[i][bCol].getCol(sCol)[j] == value) {
+                    cout << "VIOLATION!";
+                    return true;
+                }
             }
+
         }
         cout << "NO VIOLATION!";
         return false;
@@ -238,10 +247,13 @@ public:
 
    bool checkRowViolation(int bRow, int sRow, int value) { //is the value I'm trying to palce in a space already present in the row?
         for (int i=0; i<3; i++) {
-            if (board[bRow][i].getRow(sRow)[i]==value) {
-                cout << "VIOLATION!";
-                return true;
+            for (int j=0; j<3; j++) {
+                if (board[bRow][i].getRow(sRow)[j]==value) {
+                    cout << "VIOLATION!";
+                    return true;
+                }
             }
+
         }
         cout << "NO VIOLATION";
         return false;
@@ -260,6 +272,11 @@ public:
 
     //check a block row & col, and a space row & col for a value
     bool checkViolation(int bRow, int bCol, int sRow, int sCol, int value) { //call the function above and determine if placing the value would violate game rules 
+    cout << "bRow = " << bRow << endl;
+    cout << "bCol = " << bCol << endl;
+    cout << "sRow = " << sRow << endl;
+    cout << "sCol = " << sCol << endl;
+    cout << "value = " << value << endl;
         if(checkForbidBlockVals(bRow, bCol, value)==true) {
             //VIOLATED! Cannot place a block here
             return true; //might want to call another function here or something... it could be important to determine why this number can't go here? ie: what kind of violation to backtrace steps? or too much work for function later... idk
@@ -267,11 +284,14 @@ public:
         if (checkRowViolation(bRow, sRow, value)==true) {  
             return true;
         }
-        if (checkColViolation(bCol, sCol, value)==true) {
+        else if (checkColViolation(bCol, sCol, value)==true) {
             return true;
         }
-        cout << "no violation!" << endl;
-        return false;
+        else {
+            cout << "no violation!" << endl;
+            return false;
+        }
+
     }
 
     /*void printBoard(int &row, int &col) {
@@ -356,10 +376,13 @@ public:
         }
 
     }*/
-
-    void solve(int tryValue) {
-
-
+    
+    Board solve(Board inBoard) {
+        //convert index to [0][0]-[8][8]
+        int block;
+        //loop over bestBlocks
+        //loop over least forbidden values (?)
+        //pass space(?) if checkViolation is false (the value can go there) --> move onto the next space. checkViolation is true, call yourself with the previous block's next possible value
     }
 
     bool isSolved() {
@@ -398,7 +421,8 @@ int main() {
 
     //place the givens
     gameBoard.placeGivens(gameBoard.readGivens(fileName),gameBoard);
-    gameBoard.checkViolation(2,0,1,1,5); //pass bRow, bCol, sRow, sCol, value
+    gameBoard.checkViolation(1,0,1,1,3); //pass bRow, bCol, sRow, sCol, value
+    
     cout << "best block value = " << gameBoard.findBestBlock().totalValues <<endl; //calling this here for testing purposes.
     return 0;
 }

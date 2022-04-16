@@ -71,10 +71,11 @@ public:
         if (p->next!=NULL) p->next->prev=p->prev;
         p=p->next;
         delete dead;
+        return true;
       } else
           p=p->next; //still have to increment even if it doesn't match
     }
-    return p;
+    return false;
   }
 
 };
@@ -82,23 +83,52 @@ public:
 class Queue {
   DLNode *head, *tail;
 public:
+  class Iterator { //class inside Queue class so that we can do as many iterations over the class at a time as we want to.
+    DLNode *current;
+  public:
+    Increment increment() {
+      current=current->getNext(); //increment current
+      return *this;
+    }
+
+    Iterator operator ++() {
+      return increment();
+    }
+
+    Iterator(DLNode *newCurrent) {
+      current = newCurrent;
+    }
+
+  };
+
   Queue() {
     head = NULL;
     tail = NULL;
   }
 
+  //the copy constructor:
   Queue(const Queue &other) { //I want to make a copy (shallow vs deep copy. Shallow copy would end up deleting both Queues)
-    /* THIS IS A SHALLOW COPY - > it is the default.
-    head = other.head;
-    tail=other.tail
-    copy constructor: (like type casting a variable. that's also a copy constructor)
-    */
+    //THIS IS A SHALLOW COPY - > it is the default.
+    //head = other.head;
+    //tail=other.tail
+    head = NULL;
+    tail = NULL;
+    //cout << hex << other.head << endl; //THIS IS A HELPFUL TOOL WHEN USING COUT TO DEBUGG
+    //copy constructor: (like type casting a variable. that's also a copy constructor)
+
     //this is the deep copy. creates new houses for the values. shallow copies just create pointers to the origional houses
     DLNode *p=other.head;
     while (p!=NULL) { //while not at the end of the list
       push(p->getData());
       p=p->getNext();
     }
+  }
+
+  Iterator* begin() {
+    return new Iterator(head);
+  }
+  Iterator* end() {
+    return NULL;
   }
 
   void pop() {
@@ -143,6 +173,9 @@ public:
 
 
 int main() {
+
+
+
   //string k("Karl");
   //for (auto it=k.rbegin(); it!=k.rend(); it++) {
   //  cout << *it << ' ';
