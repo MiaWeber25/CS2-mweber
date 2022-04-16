@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <stack>
+#include <math.h>
 
 //find  an element!
 using namespace std;
@@ -83,7 +84,7 @@ public:
                 }
                 //else if
 
-                else cout<<"   Hi    "; //use if statements to check if row and col match desired
+                else cout<<"         "; //use if statements to check if row and col match desired
             }
             }
             cout<<endl;
