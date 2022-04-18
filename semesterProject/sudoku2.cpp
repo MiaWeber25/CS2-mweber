@@ -119,10 +119,10 @@ public:
                     forbidBlockVals.push_back(block[i][j].getValue()); //use getter on line below instead...
             }
         }
-        cout << "FORBIDDEN BLOCK VALS: " << endl;
-        for (int i=0; i<forbidBlockVals.size(); i++) {
-            cout << forbidBlockVals[i] << endl;
-        }
+        //cout << "FORBIDDEN BLOCK VALS: " << endl;
+        //for (int i=0; i<forbidBlockVals.size(); i++) {
+        //    cout << forbidBlockVals[i] << endl;
+       // }
         return forbidBlockVals;
     }
 
@@ -131,10 +131,10 @@ public:
         for (int i=0; i<3; i++) {
             colValues.push_back(block[i][sCol].getValue());
         }
-        cout << "COL VALUES: " << endl;
-        for (int i=0; i<colValues.size(); i++) {
-            cout << colValues[i] << endl;
-        }
+        //cout << "COL VALUES: " << endl;
+        //for (int i=0; i<colValues.size(); i++) {
+        //    cout << colValues[i] << endl;
+        //}
         return colValues;
     }
 
@@ -143,10 +143,10 @@ public:
         for (int i=0; i<3; i++) {
             rowValues.push_back(block[sRow][i].getValue());
         }
-        cout << "ROW VALUES: " << endl;
-        for (int i=0; i<rowValues.size(); i++) {
-            cout << rowValues[i] << endl;
-        }
+        //cout << "ROW VALUES: " << endl;
+        //for (int i=0; i<rowValues.size(); i++) {
+        //    cout << rowValues[i] << endl;
+        //}
         return rowValues;
     }
 };
@@ -235,13 +235,13 @@ public:
         for (int i=0; i<3; i++) {
             for (int j=0; j<3; j++) {
                 if (board[i][bCol].getCol(sCol)[j] == value) {
-                    cout << "VIOLATION!";
+                    //cout << "Violation from checkColViolation()";
                     return true;
                 }
             }
 
         }
-        cout << "NO VIOLATION!";
+        //cout << "No violation from checkColViolation()";
         return false;
     }
 
@@ -249,13 +249,13 @@ public:
         for (int i=0; i<3; i++) {
             for (int j=0; j<3; j++) {
                 if (board[bRow][i].getRow(sRow)[j]==value) {
-                    cout << "VIOLATION!";
+                   // cout << "Violation from checkRowViolation()" << endl;
                     return true;
                 }
             }
 
         }
-        cout << "NO VIOLATION";
+        //cout << "No violation from checkRowViolation()" << endl;
         return false;
     }
 
@@ -272,11 +272,11 @@ public:
 
     //check a block row & col, and a space row & col for a value
     bool checkViolation(int bRow, int bCol, int sRow, int sCol, int value) { //call the function above and determine if placing the value would violate game rules 
-    cout << "bRow = " << bRow << endl;
-    cout << "bCol = " << bCol << endl;
-    cout << "sRow = " << sRow << endl;
-    cout << "sCol = " << sCol << endl;
-    cout << "value = " << value << endl;
+   //cout << "bRow = " << bRow << endl;
+    //cout << "bCol = " << bCol << endl;
+    //cout << "sRow = " << sRow << endl;
+   // cout << "sCol = " << sCol << endl;
+   // cout << "value = " << value << endl;
         if(checkForbidBlockVals(bRow, bCol, value)==true) {
             //VIOLATED! Cannot place a block here
             return true; //might want to call another function here or something... it could be important to determine why this number can't go here? ie: what kind of violation to backtrace steps? or too much work for function later... idk
@@ -288,7 +288,7 @@ public:
             return true;
         }
         else {
-            cout << "no violation!" << endl;
+            //cout << "NO VIOLATION FROM CHECKVIOLATION()" << endl;
             return false;
         }
 
@@ -377,18 +377,66 @@ public:
 
     }*/
     
-    Board solve(Board inBoard) {
-        //convert index to [0][0]-[8][8]
-        int block;
+    void solve(/*Block inBlock*/) {
+        //Board b;
+        cout << "Solve was called" << endl << endl;
+        for (int i=0; i<9; i++) {
+            for (int j=0; j<9; j++) { 
+                for (int k=1; k<=9; k++) { //k=value
+                    int blockX = i/3;
+                    int blockY = j/3;
+                    int spaceX = i%3;
+                    int spaceY = j%3;
+                    cout << "calling checkViolation() on: [" << blockX << "][" << blockY << "]  [" << spaceX << "][" << spaceY << "] with value =" << k << endl;
+                    if (checkViolation(blockX, blockY, spaceX, spaceY, k) == false) { //there was no violation
+                        //mark the number as a computer placement
+                        //place the number in the space
+                        //move onto the next space
+                        cout << "no violation from solve()" << endl;
+                    } else { //there was a violation!
+                        //try the next k value --> recurssion
+                        //solve();
+                        cout << "violation from solve()" << endl;
+
+                    }
+                }
+            }
+        }
+        //return b;
+    }
+
+
+        /*convert index to [0][0]-[8][8]
+        int bRow, bCol, sRow, sCol, value;
+        findBestBlock(); //somehow we need to acccess the index of best block...
         //loop over bestBlocks
         //loop over least forbidden values (?)
         //pass space(?) if checkViolation is false (the value can go there) --> move onto the next space. checkViolation is true, call yourself with the previous block's next possible value
-    }
+        checkViolation(bRow,bCol,sRow,sCol,value);
+        blockSolve(findBestBlock());
+        //second method: pure recurssion: 
+        
+        int blockX;
+        for (int i=0; i<board.size(); i++) {
+            for (int j=0; j<board.size(); j++) {
+                blockX = i / 3;
+            }
+        }*/
 
-    bool isSolved() {
-
-        return false;
-    }
+    /*void blockSolve(Block b) {
+        //get index of b...
+        for (int i=0; i<9; i++) {
+            for (int j=0; j<9;j++) {
+                for (int k=0; k<9; k++) {
+                    if (checkViolation(0,0,i,j,k) == false) { //0,0 needs to be replaced with the index of b... (mod and divide stuff here??)
+                        //place the number!
+                    } else {
+                        //don't place the number and try with the next k value...
+                    }
+                }
+            }
+        }
+    }*/
 
     Block findBestBlock() { //function to find the block with the fewest empty spaces. Which blocks should I solve first? this tells you that
         Block currentBest;
@@ -421,7 +469,8 @@ int main() {
 
     //place the givens
     gameBoard.placeGivens(gameBoard.readGivens(fileName),gameBoard);
-    gameBoard.checkViolation(1,0,1,1,3); //pass bRow, bCol, sRow, sCol, value
+    //gameBoard.checkViolation(1,0,1,1,3); //pass bRow, bCol, sRow, sCol, value
+    gameBoard.solve();
     
     cout << "best block value = " << gameBoard.findBestBlock().totalValues <<endl; //calling this here for testing purposes.
     return 0;
