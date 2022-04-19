@@ -86,14 +86,12 @@ public:
   class Iterator { //class inside Queue class so that we can do as many iterations over the class at a time as we want to.
     DLNode *current;
   public:
-    Increment increment() {
-      current=current->getNext(); //increment current
+    Iterator operator ++(int x) {
+      current=current->getNext();
       return *this;
-    }
-
-    Iterator operator ++() {
       return increment();
     }
+
 
     Iterator(DLNode *newCurrent) {
       current = newCurrent;
@@ -186,6 +184,7 @@ int main() {
 
   q->push(10.0);
   q->push(12.0);
+  for (Qu)
   p=*q; //calls copy constructor implicitly
   q->pop();
   cout << q->front() << endl;
