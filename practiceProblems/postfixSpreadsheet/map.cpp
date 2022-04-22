@@ -32,7 +32,6 @@ public:
         cout << "contents from constructor: " << contents << endl;
     }
     void printCell() {
-        //cout << first << endl;
         cout << contents << endl;
     }
 
@@ -45,7 +44,7 @@ public:
         contents = newContents;
     }
     void printCell() {
-
+        cout << contents << endl;
     }
 
     void calculate() { //double calculate()
@@ -68,7 +67,7 @@ public:
         contents = newContents;
     }
     void printCell() {
-
+        cout << contents << endl;
     }
 };
 
@@ -78,7 +77,7 @@ public:
     void printSheet() {
         for (auto it = sheet.begin(); it!=sheet.end(); it++) {
             cout << "first: " << it->first << " second: "; // second: " << it->second << endl;
-            (*it->second).printCell(); //will it know what kind of cell it is? 
+            (*it->second).printCell(); //will it know what kind of cell it is? YES! Enumeration type has already been called
             cout << endl;
         }
     }
@@ -100,12 +99,38 @@ public:
                 break; }
         }
     }
+    //Question: do I need seperate cases for each cell type?? Eventually I will because of double type in valueCell and need to evaluate a new formula cell
+    void editCell(string key, Cell::cellType cell, string newContents) { //might not need to pass this in, but just identify it inside function...
+        cout << "INSIDE EDITCELL()" << endl;
+        cout << "key of cell to edit = " << key << endl;
+        switch(cell) {
+            case 't': {
+                cout << "inside t case" << endl;
+                //sheet[key] = newContents; want to be able to do this... syntax problem...
+                break; }
+            case 'f': {
+                cout << "inside f case" << endl;
+                //sheet[key] = newContents
+                break; }
+            case 'v': {
+                cout << "inside v case" << endl;
+                //sheet[key] = newContents;
+                break; }
+        }
+    }
+    void removeCell(string key) {
+        //search through map and find the provided key, then delete the key-value pair
+    }
 };
 
-string setContents() { //will need to templatize so you can set a double for the value cell
-    string userContents;
+//SHOULD THIS BE IN SHEET CLASS???
+string setContents() { //will need to templatize so you can set a double for the value cell 
+    string temp;
     cout << "Please enter the contents for your cell: " << endl;
-    cin >> userContents;
+    cin.ignore();
+    getline(cin, temp);
+    string userContents;
+    userContents = temp;
     return userContents;
 }
 
@@ -114,7 +139,7 @@ char printMainMenu() {
     cout << "WELCOME TO THE POSTFIX SPREADSHEET!" << endl;
     cout << "Please select a menu option: " << endl;
     cout << "[1] Create a new spreadsheet" << endl;
-    cout << "[2] Open an existing spreadsheet" << endl;
+    //cout << "[2] Open an existing spreadsheet" << endl;
     cin >> choice;
     return choice;
 }
@@ -128,20 +153,30 @@ char printCellMenu() {
     return choice;
 }
 
+char printActionsMenu() {
+    char choice;
+    cout << "[1] Edit an existing cell" << endl;
+    cout << "[2] Add an aditional cell" << endl;
+    cout << "[3] Remove an existing cell" << endl;
+    cin >> choice;
+    return choice;
+}
 
-int main() {
-    Sheet s;
+void mainMenuSwitch(Sheet &s) {
     switch(printMainMenu()) {
         case '1': //create a new spreadsheet
             //createNew();
             cout << "Create a new spreadsheet!" << endl;
             break;
-        case '2': //open an existing spreadsheet
-            cout << "Open an existing spreadsheet!" << endl;
-            break;
+        //case '2': //open an existing spreadsheet
+         //   cout << "Open an existing spreadsheet!" << endl;
+          //  break;
         default:
             cout << "Please enter a valid choice." << endl;
     }
+}
+
+void cellMenuSwitch(Sheet &s) {
     switch(printCellMenu()) {
         case '1': { //create a title cell
             cout << "creating a title cell..." << endl;
@@ -156,14 +191,59 @@ int main() {
             s.addCell(getLocationInfo(), Cell::value);
             break; }
     }
-    //get Location Info: (key):
+}
+
+void actionsMenuSwitch(Sheet &s) {
+    switch(printActionsMenu()) {
+        case '1': { //edit an existing cell
+            cout << "editing an existing cell..." << endl;
+            string key;
+            string contents;
+            cout << "Please enter the location of the cell you want to edit A-J, 1-10: " << endl;
+            cin >> key;
+            cout << "Please enter the new contents of the cell: " << endl;
+            cin.ignore();
+            getline(cin, contents);
+            //s.editCell(key, /*cellType*/,contents); --> don't want to pass type of cell here, need to identify that in function in sheet class...
+            break; }
+        case '2': { //add an additional cell
+            cout << "adding an additional cell..." << endl;
+            cellMenuSwitch(s);
+            break; }
+        case '3': { //remove an existing cell
+            cout << "removing an existing cell..." << endl;
+            //REMOVE CELL
+            string key;
+            cout << "Please enter the location of the cell you want to delete: " << endl;
+            cin >> key;
+            s.removeCell(key);
+        break; }
+    }
+}
+
+int main() {
+    Sheet s;
+    mainMenuSwitch(s);
+
+    bool cont = true;
+    while (cont == true) {
+        cellMenuSwitch(s);
+        actionsMenuSwitch(s);
+        char choice;
+        cout << "Do you want to continue? [y][n] " << endl;
+        cin >> choice;
+        if (choice == 'y' || choice== 'Y') 
+            cont = true;
+        else 
+            cont = false;
+    }
 
     //print();
     s.printSheet();
     return 0;
 }
 
-
+//SHOULD THIS BE IN SHEET CLASS?
 string getLocationInfo() {
     string key;
     cout << "Please enter the location for the new cell. A-J, 1-10: " << endl;
