@@ -1,7 +1,7 @@
 COMPILER = g++
 COMPILER_FLAGS = -Wall -std=c++17
-PROGRAM_NAME = sample
-CPP_FILES = sample.cpp 
+PROGRAM_NAME = map
+CPP_FILES = map.cpp 
 
 build:
 	$(COMPILER) $(COMPILER_FLAGS) $(CPP_FILES) -o $(PROGRAM_NAME)

@@ -25,7 +25,7 @@ public:
 
 
 class TitleCell: public Cell<string> {
-
+    
 };
 
 class FormulaCell: public Cell<string> {
