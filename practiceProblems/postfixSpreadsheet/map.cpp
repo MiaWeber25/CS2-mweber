@@ -16,12 +16,17 @@ class Cell {
 protected:
     string contents;
     bool isEmpty;
+    
 public:
     //constructor
     enum cellType {title='t', formula='f', value='v'};
 
 
     virtual void printCell()=0;
+
+    string getContents() {
+        return contents;
+    }
 };
 
 class TitleCell: public Cell {
@@ -33,6 +38,9 @@ public:
     }
     void printCell() {
         cout << contents << endl;
+    }
+    string getContents() {
+        return contents;
     }
 
 };
@@ -57,6 +65,9 @@ public:
             cout << "This cell is empty. Please select another." << endl;
             //throw exception???
         }
+    }
+    string getContents() {
+        return contents;
     }
 };
 
@@ -99,27 +110,24 @@ public:
                 break; }
         }
     }
-    //Question: do I need seperate cases for each cell type?? Eventually I will because of double type in valueCell and need to evaluate a new formula cell
-    void editCell(string key, Cell::cellType cell, string newContents) { //might not need to pass this in, but just identify it inside function...
-        cout << "INSIDE EDITCELL()" << endl;
-        cout << "key of cell to edit = " << key << endl;
-        switch(cell) {
-            case 't': {
-                cout << "inside t case" << endl;
-                //sheet[key] = newContents; want to be able to do this... syntax problem...
-                break; }
-            case 'f': {
-                cout << "inside f case" << endl;
-                //sheet[key] = newContents
-                break; }
-            case 'v': {
-                cout << "inside v case" << endl;
-                //sheet[key] = newContents;
-                break; }
+    void editCell(string key, /*Cell::cellType cell,*/ string newContents) { 
+        map<string, Cell*>::const_iterator it;
+        it = sheet.find(key);
+        cout << "THE VALUE OF KEY TO EDIT: " << it->second->getContents() << endl; 
+        //determine enum type of cell
+        if (Cell::title) {
+            cout << "identified cell as a value cell" << endl;
+        } else if (Cell::value) { //seems to be identifing every cell as a value cell...
+            cout << "identified cell as a title cell" << endl;
+        } else if (Cell::formula) {
+            cout << "identified cell as a formula cell" << endl;
         }
     }
     void removeCell(string key) {
         //search through map and find the provided key, then delete the key-value pair
+        //map<string, Cell*>::const_iterator it;
+        //it = sheet.find(key);
+        sheet.erase(key);
     }
 };
 
@@ -168,9 +176,6 @@ void mainMenuSwitch(Sheet &s) {
             //createNew();
             cout << "Create a new spreadsheet!" << endl;
             break;
-        //case '2': //open an existing spreadsheet
-         //   cout << "Open an existing spreadsheet!" << endl;
-          //  break;
         default:
             cout << "Please enter a valid choice." << endl;
     }
@@ -195,7 +200,7 @@ void cellMenuSwitch(Sheet &s) {
 
 void actionsMenuSwitch(Sheet &s) {
     switch(printActionsMenu()) {
-        case '1': { //edit an existing cell
+        case '1': { //edit an existing cell --> WORKING (need to iron out details when value is a double)
             cout << "editing an existing cell..." << endl;
             string key;
             string contents;
@@ -204,9 +209,9 @@ void actionsMenuSwitch(Sheet &s) {
             cout << "Please enter the new contents of the cell: " << endl;
             cin.ignore();
             getline(cin, contents);
-            //s.editCell(key, /*cellType*/,contents); --> don't want to pass type of cell here, need to identify that in function in sheet class...
+            s.editCell(key, contents);
             break; }
-        case '2': { //add an additional cell
+        case '2': { //add an additional cell --> WORKING (if time- edit and polish menu looping)
             cout << "adding an additional cell..." << endl;
             cellMenuSwitch(s);
             break; }
@@ -216,7 +221,7 @@ void actionsMenuSwitch(Sheet &s) {
             string key;
             cout << "Please enter the location of the cell you want to delete: " << endl;
             cin >> key;
-            s.removeCell(key);
+            s.removeCell(key); //might want to use return value of this function call to alert user if cell doesn't exist...
         break; }
     }
 }

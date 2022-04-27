@@ -1,8 +1,8 @@
 //CODE REFERENCE FOR PRINTBOARD(): https://stackoverflow.com/questions/48677066/printing-a-grid
 #include <vector>
 #include <iostream>
-#include <fstream> 
-#include <sstream> 
+#include <fstream>
+#include <sstream>
 #include <math.h>
 //#include <iomanip> //MIGHT NEED THIS LATER FOR OUTPUT FORMATTING
 #include <algorithm>
@@ -33,7 +33,7 @@ public:
     }
 
     /*void setForbiddenValue(int value) { //setter for forbiddenValue
-        forbiddenValues.push_back(value);  
+        forbiddenValues.push_back(value);
     }
     int getForbiddenValue(int index) { //NOT USING EITHER OF THESE RIGHT NOW...
         return forbiddenValues[index];
@@ -56,7 +56,7 @@ public:
 
 
 class Block {
-   // vector<vector<Space>> block; 
+   // vector<vector<Space>> block;
    vector<int> forbidBlockVals;
    //vector<int> rowValues;
    //vector<int> colValues;
@@ -109,7 +109,7 @@ public:
     }
 
     void printBlock() {
-        
+
     }
 
     vector<int> calculateBValues() { //function to calculate the values that are not allowed in a block
@@ -154,7 +154,7 @@ public:
 
 
 
-class Board { 
+class Board {
     vector<vector<Block>> board;
 public:
     //vector<int> forbidRowVals; //needs to be private
@@ -175,11 +175,11 @@ public:
     }
 
     vector<int> readGivens(string &fileName) { //function to read in givens from a file
-        vector<string> line; 
+        vector<string> line;
         vector<string> tokens;
         vector<int> tokens2;
         string temp;
-        
+
         ifstream fin;
         fin.open(fileName, ios::in);
         string intermediate;
@@ -188,7 +188,7 @@ public:
         while(!fin.eof()) {
             fin >> temp;
             line.push_back(temp);
-        } 
+        }
         for (int t=0; t<line.size(); t++) {
             stringstream ss(line[t]);
             while(getline(ss, intermediate, ',')) { //parse with comma
@@ -201,7 +201,7 @@ public:
                 tokens2.push_back(stoi(intermediate2));
             }
         }
-        return (tokens2);       
+        return (tokens2);
 
     }
     void placeGivens(vector<int>  tokens2, Board &gameBoard) { //use the givens read in function above to populate the board
@@ -218,7 +218,7 @@ public:
             i++;
             spaceY = tokens2[i];
             i++;
-        
+
             value = tokens2[i];
             i++;
 
@@ -271,7 +271,7 @@ public:
     }
 
     //check a block row & col, and a space row & col for a value
-    bool checkViolation(int bRow, int bCol, int sRow, int sCol, int value) { //call the function above and determine if placing the value would violate game rules 
+    bool checkViolation(int bRow, int bCol, int sRow, int sCol, int value) { //call the function above and determine if placing the value would violate game rules
    //cout << "bRow = " << bRow << endl;
     //cout << "bCol = " << bCol << endl;
     //cout << "sRow = " << sRow << endl;
@@ -279,12 +279,15 @@ public:
    // cout << "value = " << value << endl;
         if(checkForbidBlockVals(bRow, bCol, value)==true) {
             //VIOLATED! Cannot place a block here
+            cout << "violated forbidden block vals" << endl;
             return true; //might want to call another function here or something... it could be important to determine why this number can't go here? ie: what kind of violation to backtrace steps? or too much work for function later... idk
         }
-        if (checkRowViolation(bRow, sRow, value)==true) {  
+        if (checkRowViolation(bRow, sRow, value)==true) {
+            cout << "violated forbidden row vals" << endl;
             return true;
         }
         else if (checkColViolation(bCol, sCol, value)==true) {
+            cout << "violated forbidden col vals" << endl;
             return true;
         }
         else {
@@ -374,25 +377,28 @@ public:
             cout << endl << endl;
             count = count+8;
         }
-
     }*/
-    
+
     void solve(/*Block inBlock*/) {
         //Board b;
         cout << "Solve was called" << endl << endl;
         for (int i=0; i<9; i++) {
-            for (int j=0; j<9; j++) { 
+            for (int j=0; j<9; j++) {
                 for (int k=1; k<=9; k++) { //k=value
                     int blockX = i/3;
                     int blockY = j/3;
                     int spaceX = i%3;
                     int spaceY = j%3;
-                    cout << "calling checkViolation() on: [" << blockX << "][" << blockY << "]  [" << spaceX << "][" << spaceY << "] with value =" << k << endl;
-                    if (checkViolation(blockX, blockY, spaceX, spaceY, k) == false) { //there was no violation
+                    if (getBlock(blockX, blockY).getSpace(spaceX, spaceY).getValue() != 0) cout << "ADLREADY FILLED!" << endl;
+                    //solve(block+1) sort of thing that we want here...
+                    else if (checkViolation(blockX, blockY, spaceX, spaceY, k) == false) { //there was no violation
+                        cout << "calling checkViolation() on: [" << blockX << "][" << blockY << "]  [" << spaceX << "][" << spaceY << "] with value =" << k << endl;
+                        cout << "value in space = " << board[blockX][blockY].block[spaceX][spaceY].getValue() << endl;
+                    if (getBlock(blockX, blockY).getSpace(spaceX, spaceY).getValue() != 0) cout << "ADLREADY FILLED!" << endl;
                         //mark the number as a computer placement
                         //place the number in the space
                         //move onto the next space
-                        cout << "no violation from solve()" << endl;
+                        cout << "NO violation from solve()" << endl;
                     } else { //there was a violation!
                         //try the next k value --> recurssion
                         //solve();
@@ -414,8 +420,8 @@ public:
         //pass space(?) if checkViolation is false (the value can go there) --> move onto the next space. checkViolation is true, call yourself with the previous block's next possible value
         checkViolation(bRow,bCol,sRow,sCol,value);
         blockSolve(findBestBlock());
-        //second method: pure recurssion: 
-        
+        //second method: pure recurssion:
+
         int blockX;
         for (int i=0; i<board.size(); i++) {
             for (int j=0; j<board.size(); j++) {
@@ -459,7 +465,7 @@ public:
 
 int main() {
     Board gameBoard; //create a gameBoard
-    //read in file information 
+    //read in file information
     string fileName;
     cout << "Welcome To Sudoku Solver!!" << endl;
     cout << "Please enter the name of the file with givens: ";
@@ -471,10 +477,7 @@ int main() {
     gameBoard.placeGivens(gameBoard.readGivens(fileName),gameBoard);
     //gameBoard.checkViolation(1,0,1,1,3); //pass bRow, bCol, sRow, sCol, value
     gameBoard.solve();
-    
+
     cout << "best block value = " << gameBoard.findBestBlock().totalValues <<endl; //calling this here for testing purposes.
     return 0;
 }
-
-
-
