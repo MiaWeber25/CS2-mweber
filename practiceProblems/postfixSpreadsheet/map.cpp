@@ -2,6 +2,8 @@
 #include <map>
 #include <math.h>
 #include <stack>
+#include <algorithm> 
+#include <string>
 
 #include <vector> //FOR PRINT TESTING PURPOSES
 
@@ -129,6 +131,18 @@ public:
         //it = sheet.find(key);
         sheet.erase(key);
     }
+
+    void calculate(string &key) { //probably need a similar function in Cell class
+        cout << "GETTING IN CALCULATE FUNCTION" << endl;
+        map<string, Cell*>::const_iterator it;
+        it = sheet.find(key);
+        
+        stringstream ss()
+
+        //parse the string into operators, values, and cell IDs
+
+       
+    }
 };
 
 //SHOULD THIS BE IN SHEET CLASS???
@@ -166,6 +180,7 @@ char printActionsMenu() {
     cout << "[1] Edit an existing cell" << endl;
     cout << "[2] Add an aditional cell" << endl;
     cout << "[3] Remove an existing cell" << endl;
+    cout << "[4] Calculate a cell" << endl;
     cin >> choice;
     return choice;
 }
@@ -223,6 +238,12 @@ void actionsMenuSwitch(Sheet &s) {
             cin >> key;
             s.removeCell(key); //might want to use return value of this function call to alert user if cell doesn't exist...
         break; }
+        case '4': { //calculate a cell
+            string key;
+            cout << "Please enter the location of the cell you wish to calculate: " << endl;
+            cin >> key;
+            s.calculate(key);
+        }
     }
 }
 

@@ -6,6 +6,7 @@
 #include <math.h>
 //#include <iomanip> //MIGHT NEED THIS LATER FOR OUTPUT FORMATTING
 #include <algorithm>
+#include <stack>
 //include <iterator> //MIGHT NOT NEED THIS BECAUSE I FOUND A NEW WAY TO SEARCH FOR VALUES IN VECTORS
 
 using namespace std;
@@ -279,15 +280,15 @@ public:
    // cout << "value = " << value << endl;
         if(checkForbidBlockVals(bRow, bCol, value)==true) {
             //VIOLATED! Cannot place a block here
-            cout << "violated forbidden block vals" << endl;
+            //cout << "violated forbidden block vals" << endl;
             return true; //might want to call another function here or something... it could be important to determine why this number can't go here? ie: what kind of violation to backtrace steps? or too much work for function later... idk
         }
         if (checkRowViolation(bRow, sRow, value)==true) {
-            cout << "violated forbidden row vals" << endl;
+            //cout << "violated forbidden row vals" << endl;
             return true;
         }
         else if (checkColViolation(bCol, sCol, value)==true) {
-            cout << "violated forbidden col vals" << endl;
+            //cout << "violated forbidden col vals" << endl;
             return true;
         }
         else {
@@ -378,71 +379,67 @@ public:
             count = count+8;
         }
     }*/
-
-    void solve(/*Block inBlock*/) {
+//start with iterativly, then make recurssive.
+    void firstSolve(/*Block inBlock*/) {
+        bool boardUpdate = true;
         //Board b;
+        vector<int> answers;
         cout << "Solve was called" << endl << endl;
-        for (int i=0; i<9; i++) {
-            for (int j=0; j<9; j++) {
-                for (int k=1; k<=9; k++) { //k=value
-                    int blockX = i/3;
-                    int blockY = j/3;
-                    int spaceX = i%3;
-                    int spaceY = j%3;
-                    if (getBlock(blockX, blockY).getSpace(spaceX, spaceY).getValue() != 0) cout << "ADLREADY FILLED!" << endl;
-                    //solve(block+1) sort of thing that we want here...
-                    else if (checkViolation(blockX, blockY, spaceX, spaceY, k) == false) { //there was no violation
-                        cout << "calling checkViolation() on: [" << blockX << "][" << blockY << "]  [" << spaceX << "][" << spaceY << "] with value =" << k << endl;
-                        cout << "value in space = " << board[blockX][blockY].block[spaceX][spaceY].getValue() << endl;
-                    if (getBlock(blockX, blockY).getSpace(spaceX, spaceY).getValue() != 0) cout << "ADLREADY FILLED!" << endl;
-                        //mark the number as a computer placement
-                        //place the number in the space
-                        //move onto the next space
-                        cout << "NO violation from solve()" << endl;
-                    } else { //there was a violation!
-                        //try the next k value --> recurssion
-                        //solve();
-                        cout << "violation from solve()" << endl;
-
+        while(boardUpdate) {
+            boardUpdate = false;
+            for (int i=0; i<9; i++) {
+                for (int j=0; j<9; j++) {
+                        int blockX = i/3;
+                        int blockY = j/3;
+                        int spaceX = i%3;
+                        int spaceY = j%3;
+                    if (getBlock(blockX, blockY).getSpace(spaceX, spaceY).getValue() == 0) { //empty space!
+                        ///////cout << "empty space @ [" << blockX << "][" << blockY << "] [" << spaceX << "][" << spaceY << "] " << endl;
+                        answers.clear();
+                        for (int k=1; k<=9; k++) {
+                            if(!checkViolation(blockX, blockY, spaceX, spaceY, k)) { //no violation --> add to vector?
+                                /////////cout << "no violation! adding " << k << " to the vector" << endl;
+                                answers.push_back(k);
+                            }
+                        }
+                        if (answers.size() ==1) {
+                            board[blockX][blockY].block[spaceX][spaceY].setValue(answers[0]);
+                            //change bool flag for guarrenteedValue -wait
+                            //change update flag
+                            boardUpdate = true;
+                        }
                     }
                 }
             }
         }
-        //return b;
+        secondSolve();
     }
 
-
-        /*convert index to [0][0]-[8][8]
-        int bRow, bCol, sRow, sCol, value;
-        findBestBlock(); //somehow we need to acccess the index of best block...
-        //loop over bestBlocks
-        //loop over least forbidden values (?)
-        //pass space(?) if checkViolation is false (the value can go there) --> move onto the next space. checkViolation is true, call yourself with the previous block's next possible value
-        checkViolation(bRow,bCol,sRow,sCol,value);
-        blockSolve(findBestBlock());
-        //second method: pure recurssion:
-
-        int blockX;
-        for (int i=0; i<board.size(); i++) {
-            for (int j=0; j<board.size(); j++) {
-                blockX = i / 3;
-            }
-        }*/
-
-    /*void blockSolve(Block b) {
-        //get index of b...
+    void outputBoard() {
         for (int i=0; i<9; i++) {
-            for (int j=0; j<9;j++) {
-                for (int k=0; k<9; k++) {
-                    if (checkViolation(0,0,i,j,k) == false) { //0,0 needs to be replaced with the index of b... (mod and divide stuff here??)
-                        //place the number!
-                    } else {
-                        //don't place the number and try with the next k value...
-                    }
-                }
+            for (int j=0; j<9; j++) {
+                int blockX = i/3;
+                int blockY = j/3;
+                int spaceX = i%3;
+                int spaceY = j%3;
+                cout << "board[" << blockX << "][" << blockY << "] [" << spaceX << "][" << spaceY << "] =" << endl;
+                cout << board[blockX][blockY].block[spaceX][spaceY].getValue() << endl;
             }
         }
-    }*/
+    }
+
+    void secondSolve() {
+        //use a stack!
+        stack<Space> myLine;
+        //loop over the board -- but JUST the empty spaces
+               //loop over board and find the space with the smallest vector of possible values -> start there
+               //essentially, go in order of least possible values to most possible values to limit the number of times you have to backtrace
+        //try first possible k value, then go to the next space and try first possible k value. 
+        //push each cell onto the stack. 
+        //hit a space with no possible values, pop the previous spaces off the stack and try the next possible k
+        //still doesn't help, keep popping off spaces and incrementing k value until the board is complete.
+
+    }
 
     Block findBestBlock() { //function to find the block with the fewest empty spaces. Which blocks should I solve first? this tells you that
         Block currentBest;
@@ -476,7 +473,8 @@ int main() {
     //place the givens
     gameBoard.placeGivens(gameBoard.readGivens(fileName),gameBoard);
     //gameBoard.checkViolation(1,0,1,1,3); //pass bRow, bCol, sRow, sCol, value
-    gameBoard.solve();
+    gameBoard.firstSolve();
+    gameBoard.outputBoard();
 
     cout << "best block value = " << gameBoard.findBestBlock().totalValues <<endl; //calling this here for testing purposes.
     return 0;
