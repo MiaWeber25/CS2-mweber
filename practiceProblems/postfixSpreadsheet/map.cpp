@@ -4,8 +4,8 @@
 #include <stack>
 #include <algorithm> 
 #include <sstream>
-
 #include <vector> //FOR PRINT TESTING PURPOSES
+#include <stack>
 
 using namespace std;
 
@@ -18,6 +18,7 @@ class Cell {
 protected:
     string contents;
     bool isEmpty;
+   // Cell::cellType myType;
     
 public:
     //constructor
@@ -100,7 +101,7 @@ public:
         switch(cell) {
             case 't': {
                 cout << "inside t case" << endl;
-                sheet[key]= new TitleCell(setContents(), false); 
+                sheet[key]= new TitleCell(setContents(), false); //delete later in code to prevent core dump
                 break; }
             case 'f': {
                 cout << "inside f case" << endl;
@@ -132,7 +133,7 @@ public:
         sheet.erase(key);
     }
 
-    void calculate(string &key) { //probably need a similar function in Cell class
+    double calculate(string &key) { //probably need a similar function in Cell class
         cout << "GETTING IN CALCULATE FUNCTION" << endl;
         map<string, Cell*>::const_iterator it;
         string toParse;
@@ -146,23 +147,70 @@ public:
         while(getline(ss, intermediate, ' ')) {
             cellContents.push_back(intermediate);
         }
+        stack<double> s;
         //determine if each substring is a value, cell ID, or operator and perform appropriate tasks accordingly
         for (unsigned int i=0; i<cellContents.size(); i++) {
+            cout << "cellContents at 0: " << cellContents[i][0] << endl;
             cout << "cellContents @ " << i << " = " << cellContents[i] << endl;
-            //--->don't want to use stoi. I think I can pass a char, but then have to parse again?? don't want to do that...
-            if (isdigit(stoi(cellContents[i]))) { //if the contents of the substring are a value - push onto stack
-            //if (all_of(cellContents[i].begin(), cellContents[i].end(), isdigit)) {
+            if (isdigit(cellContents[i][0])) { //if the contents of the substring are a value - push onto stack
                 cout << "contents are digits!" << endl;
-            } else if (isalpha(stoi(cellContents[i]))) { //if the contents of the substring are a CellID (if it contains ANY letters) - call find cell (and then push value onto stack from there) 
+                s.push(stod(cellContents[i]));
+            } else if (isalpha(cellContents[i][0])) { //if the contents of the substring are a CellID (if it contains ANY letters) - call find cell (and then push value onto stack from there) 
                 cout << "contents contain a letter - cell ID" << endl;
-            } else { //if the contents of the substring are an operator - determine which operator and performing appropriate mathmatical functions on numbers in stack (numbers that you will need should already be on the stack...)
+                if (Cell::value) {
+                    cout << "FOUUND A VALUE CELL" << endl;
+                    it = sheet.find(cellContents[i]);
+                    s.push(stod(it->second->getContents()));
+                } else if (Cell::formula) {
+                    cout << "FOUUND A FORMULA CELL" << endl;
+                    s.push(calculate(cellContents[i]));
+                } else { //title cell
+                    cerr << "attempted to compute title cell" << endl;
+                }
+            } else {
+                switch(cellContents[i][0]) {
+                    case '+': {
+                        double a = s.top();
+                        s.pop();
+                        double b = s.top();
+                        s.pop();
+                        s.push(a+b);
+                    }
+                }
+                 //if the contents of the substring are an operator - determine which operator and performing appropriate mathmatical functions on numbers in stack (numbers that you will need should already be on the stack...)
                 //switch statement for which operator was used...?
                 cout << "operator! call switch statement to determine which one" << endl;
             }
         }
+    return s.top(); //return the last thing on the stack
     }
+    
 };
 
+
+/*    if (input == "+") {
+        double a = s.pop();
+        double b = s.pop();
+        s.push(a+b);
+
+      } else if (input == "-") {
+          double a = s.pop();
+          double b = s.pop();
+          s.push(b-a);
+
+      } else if (input == "#") {
+          cout << s.top() << endl;
+      } else if (input == "*") { //*
+          double a = s.pop();
+          double b = s.pop();
+          s.push(a*b);
+      } else if (input == "/") { // /
+          double a = s.pop();
+          double b = s.pop();
+          s.push(b/a);
+      } else if (input == "sqrt") { // sqrt()
+          double a = s.pop();
+          s.push(sqrt(a)); */
 
 //SHOULD THIS BE IN SHEET CLASS???
 string setContents() { //will need to templatize so you can set a double for the value cell 
@@ -261,7 +309,7 @@ void actionsMenuSwitch(Sheet &s) {
             string key;
             cout << "Please enter the location of the cell you wish to calculate: " << endl;
             cin >> key;
-            s.calculate(key);
+            cout << "RESULT = " << s.calculate(key) << endl;
         }
     }
 }
