@@ -16,6 +16,7 @@ class Space {
     int value;
     //vector<int> forbiddenValues;
     bool isGiven;
+    bool isAttempted; //value is an attempted solution 
 public:
     Space(int newValue=0, bool newIsGiven = false) { //constructor
         value = newValue;
@@ -31,6 +32,10 @@ public:
 
     void setIsGiven(bool theBool) {
         isGiven = theBool;
+    }
+
+    void setIsAttempted(bool theBool) {
+        isAttempted = theBool;
     }
 
     /*void setForbiddenValue(int value) { //setter for forbiddenValue
@@ -50,6 +55,33 @@ public:
 
     void newPossibility() {
 
+    }
+
+};
+
+class SpaceReference {
+    int boardRow, boardCol;
+    Space* spaceLocation;
+
+    public:
+    int getBoardRow() {
+        return boardRow;
+    }
+    int getBoardCol() {
+        return boardCol;
+    }
+    Space* getSpaceLocation() {
+        return spaceLocation;
+    }
+
+    void setBoardRow(int& newBoardRow) {
+        boardRow = newBoardRow;
+    }
+    void setBoardCol(int &newBoardCol) {
+        boardCol = newBoardCol;
+    }
+    void setSpaceLocation(Space *newSpaceLocation) {
+        spaceLocation = newSpaceLocation;
     }
 
 };
@@ -153,10 +185,9 @@ public:
 };
 
 
-
-
 class Board {
     vector<vector<Block>> board;
+    vector<int> neededValues;
 public:
     //vector<int> forbidRowVals; //needs to be private
    // vector<int> forbidColVals; //needs to be private
@@ -169,6 +200,14 @@ public:
             }
             board.push_back(newRow);
         }
+    }
+    void addNeededValues(int &value) {
+        neededValues.push_back(value);
+    }
+    bool checkNeededValues(int &value) {
+        vector<int>::iterator it;
+        it = find(neededValues.begin(), neededValues.end(), value);
+        return (it != neededValues.end()); //true -> found the element
     }
 
     Block getBlock(int x, int y) { //getter for a block at index [x][y]
@@ -430,12 +469,35 @@ public:
 
     void secondSolve() {
         //use a stack!
-        stack<Space> myLine;
+        stack<SpaceReference> myLine;
+        for (int i=0; i<board.size(); i++) {
+            for (int j=0; j<board.size(); j++) {
+                SpaceReference sr;
+                int blockX = i/3;
+                int blockY = j/3;
+                int spaceX = i%3;
+                int spaceY = j%3;
+                for (int k=1; k<=9; k++) {
+                    if (!checkViolation(blockX, blockY, spaceX, spaceY, k)) { //if the value doesn't violate && doesn't reduce another space's possible values to 0
+                        //update the spaceLocation into
+                        sr.setBoardCol(blockY);
+                        sr.setBoardRow(blockX);
+                        sr.setSpaceLocation(&board[blockX][blockY].block[spaceX][spaceY]);
+                        board[blockX][blockY].block[spaceX][spaceY].setValue(k);
+                        //cout << "SPACE REFERENCE INFO: " << endl;
+                        //cout << "board col: " << sr.getBoardCol() << " board row: " << sr.getBoardRow() << " space location: " << sr.getSpaceLocation() << endl;
+                        //mark the space as a questionValue
+                        board[blockX][blockY].block[spaceX][spaceY].setIsAttempted(true);
+                        myLine.push(sr); //push the space ID onto the stack
+                    }
+                }
+            }
+        }
         //loop over the board -- but JUST the empty spaces
                //loop over board and find the space with the smallest vector of possible values -> start there
                //essentially, go in order of least possible values to most possible values to limit the number of times you have to backtrace
         //try first possible k value, then go to the next space and try first possible k value. 
-        //push each cell onto the stack. 
+        //push each cell key onto the stack. 
         //hit a space with no possible values, pop the previous spaces off the stack and try the next possible k
         //still doesn't help, keep popping off spaces and incrementing k value until the board is complete.
 
