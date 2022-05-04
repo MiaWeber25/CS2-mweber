@@ -509,6 +509,10 @@ public:
                             cout << "top of stack boardCol: " << myLine.top().getBoardCol() << ' ';
                             cout << "boardRow:" << myLine.top().getBoardRow() << ' ';
                             cout << "spaceLocation: " << myLine.top().getSpaceLocation() << endl;
+                            //go back to the previous block and try the next possible value
+                            //myLine.top().getSpaceLocation().getValue(); //ok wait another issue... say you go back a space and pop it off and try the next value, you could still have a problem later... you can't remove it from the stack ever right???
+                            //problems here: how to use [] notation since spaceLocation is a pointer
+                            //it doesn't know what the next available value is, so it either needs to recalculate it or I need to include some recurssion...
                         }
             }
         }

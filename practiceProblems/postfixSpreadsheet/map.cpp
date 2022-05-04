@@ -175,7 +175,32 @@ public:
                         double b = s.top();
                         s.pop();
                         s.push(a+b);
-                    }
+                        //break; 
+                        } //want a break here? added before I added the other switch cases
+                    case '-': {
+                        double a = s.top();
+                        s.pop();
+                        double b = s.top();
+                        s.pop();
+                        s.push(b-a); //b-a or a-b???
+                        //break; 
+                        }
+                    case '*': {
+                        double a = s.top();
+                        s.pop();
+                        double b = s.top();
+                        s.pop();
+                        s.push(a*b);
+                        //break;
+                         }
+                    case '/': {
+                        double a = s.top();
+                        s.pop();
+                        double b = s.top();
+                        s.pop();
+                        s.push(b/a); //b/a or a/b
+                        //break; 
+                        }
                 }
                  //if the contents of the substring are an operator - determine which operator and performing appropriate mathmatical functions on numbers in stack (numbers that you will need should already be on the stack...)
                 //switch statement for which operator was used...?
@@ -233,21 +258,24 @@ char printMainMenu() {
     return choice;
 }
 
-char printCellMenu() {
+/*char printCellMenu() {
     char choice;
     cout << "[1] Create a title cell" << endl;
     cout << "[2] Create a formula cell" << endl;
     cout << "[3] Create a value cell" << endl;
     cin >> choice;
     return choice;
-}
+}*/
 
-char printActionsMenu() {
+char printActionsMenu() { //combine all menus into this one:
     char choice;
-    cout << "[1] Edit an existing cell" << endl;
-    cout << "[2] Add an aditional cell" << endl;
-    cout << "[3] Remove an existing cell" << endl;
-    cout << "[4] Calculate a cell" << endl;
+    cout << "[1] Create a title cell" << endl;
+    cout << "[2] Create a formula cell" << endl;
+    cout << "[3] Create a value cell" << endl;
+    cout << "[4] Edit an existing cell" << endl;
+    cout << "[5] Add an aditional cell" << endl;
+    cout << "[6] Remove an existing cell" << endl;
+    cout << "[7] Calculate a cell" << endl;
     cin >> choice;
     return choice;
 }
@@ -264,7 +292,7 @@ void mainMenuSwitch(Sheet &s) {
 }
 
 void cellMenuSwitch(Sheet &s) {
-    switch(printCellMenu()) {
+    switch(printActionsMenu()) {
         case '1': { //create a title cell
             cout << "creating a title cell..." << endl;
             s.addCell(getLocationInfo(), Cell::title);
@@ -282,7 +310,19 @@ void cellMenuSwitch(Sheet &s) {
 
 void actionsMenuSwitch(Sheet &s) {
     switch(printActionsMenu()) {
-        case '1': { //edit an existing cell --> WORKING (need to iron out details when value is a double)
+        case '1': { //create a title cell
+            cout << "creating a title cell..." << endl;
+            s.addCell(getLocationInfo(), Cell::title);
+            break; }
+        case '2': { //create a formula cell
+            cout << "creating a formula cell..." << endl;
+            s.addCell(getLocationInfo(), Cell::formula);
+            break; }
+        case '3': { //create a value cell
+            cout << "creating a value cell..." << endl;
+            s.addCell(getLocationInfo(), Cell::value);
+            break; }
+        case '4': { //edit an existing cell --> WORKING (need to iron out details when value is a double)
             cout << "editing an existing cell..." << endl;
             string key;
             string contents;
@@ -293,11 +333,11 @@ void actionsMenuSwitch(Sheet &s) {
             getline(cin, contents);
             s.editCell(key, contents);
             break; }
-        case '2': { //add an additional cell --> WORKING (if time- edit and polish menu looping)
+        case '5': { //add an additional cell --> WORKING (if time- edit and polish menu looping)
             cout << "adding an additional cell..." << endl;
             cellMenuSwitch(s);
             break; }
-        case '3': { //remove an existing cell
+        case '6': { //remove an existing cell
             cout << "removing an existing cell..." << endl;
             //REMOVE CELL
             string key;
@@ -305,7 +345,7 @@ void actionsMenuSwitch(Sheet &s) {
             cin >> key;
             s.removeCell(key); //might want to use return value of this function call to alert user if cell doesn't exist...
         break; }
-        case '4': { //calculate a cell
+        case '7': { //calculate a cell
             string key;
             cout << "Please enter the location of the cell you wish to calculate: " << endl;
             cin >> key;
@@ -320,7 +360,6 @@ int main() {
 
     bool cont = true;
     while (cont == true) {
-        cellMenuSwitch(s);
         actionsMenuSwitch(s);
         char choice;
         cout << "Do you want to continue? [y][n] " << endl;
@@ -330,8 +369,6 @@ int main() {
         else 
             cont = false;
     }
-
-    //print();
     s.printSheet();
     return 0;
 }
