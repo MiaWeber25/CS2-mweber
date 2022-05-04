@@ -12,6 +12,8 @@
 using namespace std;
 
 
+
+
 class Space {
     int value;
     //vector<int> forbiddenValues;
@@ -86,6 +88,35 @@ class SpaceReference {
 
 };
 
+class Node {
+    SpaceReference sr;
+    Node *next;
+    public:
+    Node(SpaceReference newSr, Node *newNext=NULL) {
+        sr = newSr;
+        next = newNext;
+    }
+    void push(Node *item) {
+        item->next=next;
+        next=item;
+    }
+    Node* top() { //gets the top(first) element
+        Node *p = this;
+        return p;
+    }
+    void pop() { //removes the top(first) element. I DON'T THINK I NEED THIS ONE...
+
+    }
+    void print(ostream &out) {
+        Node *p = this;
+        while (p!=NULL) {
+            //this output part is tricky...
+            out << p->sr.getBoardCol() << endl;
+            p=p->next;
+        }
+    }
+
+};
 
 
 class Block {
@@ -451,7 +482,8 @@ public:
                 }
             }
         }
-        secondSolve();
+        newSecondSolve();
+        //secondSolve();
     }
 
     void outputBoard() {
@@ -466,7 +498,7 @@ public:
             }
         }
     }
-//---------------------------------BELOW HERE-------------------------------------------------------------------
+//---------------------------------BELOW HERE IS STACK-------------------------------------------------------------------
     void secondSolve() {
         //use a stack!
         stack<SpaceReference> myLine;
@@ -492,7 +524,9 @@ public:
                             cout << "set the value to " << k << endl;
                             board[blockX][blockY].block[spaceX][spaceY].setIsAttempted(true);
                             cout << "marked the cell as attempted" << endl;
-                            myLine.push(sr);
+                            //myLine.push(sr);
+                            Node *newNode = new Node(sr);
+                            newNode->push(newNode);
                             cout << "pushed space reference info on the stack" << endl;
                         }
                     } else {
@@ -518,25 +552,59 @@ public:
         }
             }
     }
-//--------------------------------ABOVE HERE--------------------------------------------------------------------------
-       // cout << "COMPLETED ALL LOOPING. EXITING FUNCTION" << endl;
-    //}
-     //Block currentBlock[blockX][blockY].Block[spaceX][spaceY];
-                    //need to make sure that it doesn't violate the game rules && that it isn't a given or already placed value
-                    //if (board[blockX][blockY].block[spaceX][spaceY].getValue()==0 && !checkViolation(blockX, blockY, spaceX, spaceY, k)) { //if the value doesn't violate && doesn't reduce another space's possible values to 0
-                        //update the spaceLocation into
-                        //cout << "THE K VALUE OF: " << k << "DOESN'T VIOLATE" << endl;
-                        //sr.setBoardCol(blockY);
-                        //sr.setBoardRow(blockX);
-                        //sr.setSpaceLocation(&board[blockX][blockY].block[spaceX][spaceY]);
-                        //board[blockX][blockY].block[spaceX][spaceY].setValue(k);
-                        //cout << "board[" << blockX << "][" << blockY << "] block[" << spaceX << "][" << spaceY << "] = " << board[blockX][blockY].block[spaceX][spaceY].getValue() << endl;
+//--------------------------------BELOW HERE IS LINKED LIST --------------------------------------------------------------------------
+void newSecondSolve() {
+    cout << "INSIDE NEW SECOND SOLVE" << endl;
+    cout << "board.size() = " << board.size() << endl;
+    //Node *newNode;
+    int pushNum;
+    for (int i=0; i<board.size(); i++) {
+        for (int j=0; j<board.size(); j++) {
+            pushNum=0;
+            SpaceReference sr;
+            int blockX = i/3;
+            int blockY = j/3;
+            int spaceX = i%3;
+            int spaceY = j%3;
+            if (board[blockX][blockY].block[spaceX][spaceY].getValue() == 0) { //if empty
+                cout << "CHECKING board[" << blockX << "][" << blockY << "] block[" << spaceX << "][" << spaceY << "]" << endl;
+                for (int k=1; k<=9; k++) {
+                    cout << "k = " << k << endl;
+                    if (!checkViolation(blockX, blockY, spaceX, spaceY, k)) { //if legal
+                        sr.setBoardCol(blockX);
+                        sr.setBoardRow(blockY);
+                        sr.setSpaceLocation(&board[blockX][blockY].block[spaceX][spaceY]);
+                        board[blockX][blockY].block[spaceX][spaceY].setValue(k);
+                        board[blockX][blockY].block[spaceX][spaceY].setIsAttempted(true);
+                        Node *newNode = new Node(sr);
+                        newNode->push(new Node(sr));
+                        pushNum++;
+                        cout << "push complete of " << k << endl;
+                    } else { //k is not legal
+                        cout << "continuing onto next k value..." << endl;
+                    }
+                }
+                //you tried all k values - were you able to push a value?? if not - then you need to go back and change something...
+                if (pushNum==0) { //you didn't push a value
+                    cout << "pushNum is 0. didn't push a value!" << endl;
 
-                        //cout << "SPACE REFERENCE INFO: " << endl;
-                        //cout << "board col: " << sr.getBoardCol() << " board row: " << sr.getBoardRow() << " space location: " << sr.getSpaceLocation() << endl;
-                        //mark the space as a questionValue
-                        //board[blockX][blockY].block[spaceX][spaceY].setIsAttempted(true);
-                        //myLine.push(sr); //push the space ID onto the stack
+                }
+                //newNode->top(); //get the top element of the linked list
+            } else {
+                continue;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
 
     Block findBestBlock() { //function to find the block with the fewest empty spaces. Which blocks should I solve first? this tells you that
         Block currentBest;
