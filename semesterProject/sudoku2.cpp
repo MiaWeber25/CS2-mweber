@@ -466,7 +466,7 @@ public:
             }
         }
     }
-
+//---------------------------------BELOW HERE-------------------------------------------------------------------
     void secondSolve() {
         //use a stack!
         stack<SpaceReference> myLine;
@@ -518,6 +518,7 @@ public:
         }
             }
     }
+//--------------------------------ABOVE HERE--------------------------------------------------------------------------
        // cout << "COMPLETED ALL LOOPING. EXITING FUNCTION" << endl;
     //}
      //Block currentBlock[blockX][blockY].Block[spaceX][spaceY];
