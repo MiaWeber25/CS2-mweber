@@ -26,7 +26,7 @@ public:
         if (left!=NULL) { //we actually have a tree to the left
           left->insert(newC, newPosition); //recurssion
         } else { //we have no tree to the left
-            left = newBinaryNode(newC, newPosition); //there's no tree over there, go create a new one for this info
+            left = new BinaryNode(newC, newPosition); //there's no tree over there, go create a new one for this info
         }
     } else { //we are at the point we need to update
         c=newC;
@@ -67,7 +67,7 @@ int main() {
   root.insert('A', 0.375);
   root.insert('N', 0.625);
   root.insert('M', 0.875);
-  
+
   cout << "PreFix Order" << endl;
   root.printPre();
   cout << endl << "PostFix Order" << endl;

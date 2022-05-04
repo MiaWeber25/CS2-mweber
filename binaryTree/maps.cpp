@@ -7,6 +7,6 @@ map<string, double> symbolTable;
 
 
 int main() {
-
+  //it->second->functCall();
   return 0;
 }
