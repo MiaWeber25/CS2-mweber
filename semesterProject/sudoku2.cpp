@@ -461,7 +461,7 @@ public:
                 int blockY = j/3;
                 int spaceX = i%3;
                 int spaceY = j%3;
-                cout << "board[" << blockX << "][" << blockY << "] [" << spaceX << "][" << spaceY << "] =" << endl;
+                cout << "board[" << blockX << "][" << blockY << "] Block[" << spaceX << "][" << spaceY << "] =" << endl;
                 cout << board[blockX][blockY].block[spaceX][spaceY].getValue() << endl;
             }
         }
@@ -470,38 +470,68 @@ public:
     void secondSolve() {
         //use a stack!
         stack<SpaceReference> myLine;
+        cout << "board.size() = " << board.size() << endl;
         for (int i=0; i<board.size(); i++) {
+            cout << "I VALUE = " << i << endl;
             for (int j=0; j<board.size(); j++) {
+                cout << "J VALUE = " << j << endl;
                 SpaceReference sr;
                 int blockX = i/3;
                 int blockY = j/3;
                 int spaceX = i%3;
                 int spaceY = j%3;
+                cout << "CURRENTLY CHECKING: board[" << blockX << "][" << blockY << "] block[" << spaceX << "][" << spaceY << "]" << endl;
                 for (int k=1; k<=9; k++) {
-                    if (!checkViolation(blockX, blockY, spaceX, spaceY, k)) { //if the value doesn't violate && doesn't reduce another space's possible values to 0
+                    if (board[blockX][blockY].block[spaceX][spaceY].getValue() == 0) { //only ever passes this check the first time... once you assign a value in here it doesn't work...
+                        if (!checkViolation(blockX, blockY, spaceX, spaceY, k)) {
+                            cout << "checked k value: " << k << " and it didn't violate" << endl;
+                            sr.setBoardCol(blockY);
+                            sr.setBoardRow(blockX);
+                            sr.setSpaceLocation(&board[blockX][blockY].block[spaceX][spaceY]);
+                            board[blockX][blockY].block[spaceX][spaceY].setValue(k);
+                            cout << "set the value to " << k << endl;
+                            board[blockX][blockY].block[spaceX][spaceY].setIsAttempted(true);
+                            cout << "marked the cell as attempted" << endl;
+                            myLine.push(sr);
+                            cout << "pushed space reference info on the stack" << endl;
+                        }
+                    } else {
+                        cout << "current space is already completed" << endl;
+                    }    
+                } 
+                //here! still in i j loop - out of k loop
+                cout << "out of k looping structure." << endl;
+                    if (board[blockX][blockY].block[spaceX][spaceY].getValue() == 0) { //if the value of the space is still 0
+                        cout << "contents of current space is still 0" << endl;
+                        if (myLine.empty()) {
+                            cout << "myLine is empty" << endl;
+                        } else {
+                            cout << "top of stack boardCol: " << myLine.top().getBoardCol() << ' ';
+                            cout << "boardRow:" << myLine.top().getBoardRow() << ' ';
+                            cout << "spaceLocation: " << myLine.top().getSpaceLocation() << endl;
+                        }
+            }
+        }
+            }
+    }
+       // cout << "COMPLETED ALL LOOPING. EXITING FUNCTION" << endl;
+    //}
+     //Block currentBlock[blockX][blockY].Block[spaceX][spaceY];
+                    //need to make sure that it doesn't violate the game rules && that it isn't a given or already placed value
+                    //if (board[blockX][blockY].block[spaceX][spaceY].getValue()==0 && !checkViolation(blockX, blockY, spaceX, spaceY, k)) { //if the value doesn't violate && doesn't reduce another space's possible values to 0
                         //update the spaceLocation into
-                        sr.setBoardCol(blockY);
-                        sr.setBoardRow(blockX);
-                        sr.setSpaceLocation(&board[blockX][blockY].block[spaceX][spaceY]);
-                        board[blockX][blockY].block[spaceX][spaceY].setValue(k);
+                        //cout << "THE K VALUE OF: " << k << "DOESN'T VIOLATE" << endl;
+                        //sr.setBoardCol(blockY);
+                        //sr.setBoardRow(blockX);
+                        //sr.setSpaceLocation(&board[blockX][blockY].block[spaceX][spaceY]);
+                        //board[blockX][blockY].block[spaceX][spaceY].setValue(k);
+                        //cout << "board[" << blockX << "][" << blockY << "] block[" << spaceX << "][" << spaceY << "] = " << board[blockX][blockY].block[spaceX][spaceY].getValue() << endl;
+
                         //cout << "SPACE REFERENCE INFO: " << endl;
                         //cout << "board col: " << sr.getBoardCol() << " board row: " << sr.getBoardRow() << " space location: " << sr.getSpaceLocation() << endl;
                         //mark the space as a questionValue
-                        board[blockX][blockY].block[spaceX][spaceY].setIsAttempted(true);
-                        myLine.push(sr); //push the space ID onto the stack
-                    }
-                }
-            }
-        }
-        //loop over the board -- but JUST the empty spaces
-               //loop over board and find the space with the smallest vector of possible values -> start there
-               //essentially, go in order of least possible values to most possible values to limit the number of times you have to backtrace
-        //try first possible k value, then go to the next space and try first possible k value. 
-        //push each cell key onto the stack. 
-        //hit a space with no possible values, pop the previous spaces off the stack and try the next possible k
-        //still doesn't help, keep popping off spaces and incrementing k value until the board is complete.
-
-    }
+                        //board[blockX][blockY].block[spaceX][spaceY].setIsAttempted(true);
+                        //myLine.push(sr); //push the space ID onto the stack
 
     Block findBestBlock() { //function to find the block with the fewest empty spaces. Which blocks should I solve first? this tells you that
         Block currentBest;
@@ -535,8 +565,9 @@ int main() {
     //place the givens
     gameBoard.placeGivens(gameBoard.readGivens(fileName),gameBoard);
     //gameBoard.checkViolation(1,0,1,1,3); //pass bRow, bCol, sRow, sCol, value
-    gameBoard.firstSolve();
-    gameBoard.outputBoard();
+    gameBoard.firstSolve(); 
+    cout << "BACK IN MAIN. CALLING OUTPUTBOARD()" << endl;
+  //gameBoard.outputBoard(); //**COMMENTED OUT FOR TESTING PURPOSES
 
     cout << "best block value = " << gameBoard.findBestBlock().totalValues <<endl; //calling this here for testing purposes.
     return 0;
