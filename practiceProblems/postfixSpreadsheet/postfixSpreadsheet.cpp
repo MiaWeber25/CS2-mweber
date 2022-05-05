@@ -14,11 +14,12 @@ public:
   Cell(T &newValue) { //CONSTRUCTOR
       newValue = value;
   }
+  Cell() = default;
   //print value, manipulate value, delete value, add value???
   virtual bool correctCellType() = 0; //implement seperatly in each class
 };
 
-class formulaCell/*: public Cell<T> */{ //cell that takes a formula
+class formulaCell: public Cell<string> { //cell that takes a formula
   string formula;
 public:
   formulaCell(string &newFormula) { //CONSTRUCTOR

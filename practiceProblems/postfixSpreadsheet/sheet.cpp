@@ -16,17 +16,25 @@ void samplePrint();
 string getLocationInfo();
 string setContents();
 
+//Node to self: PLACES I HAVE PROBLEMS: Cell in map declaration (iterators too!) && Cell::____ 
+template <class T>
 class Cell {
 protected:
-    string contents;
+    //string contents;
+    T contents;
     bool isEmpty;
    // Cell::cellType myType;
     
 public:
-    Cell(string newContents="0", bool newIsEmpty=true) {
+    /*Cell(string newContents="0", bool newIsEmpty=true) {
+        isEmpty = newIsEmpty;
+        contents = newContents;
+    }*/
+    Cell(T newContents, bool newIsEmpty=true) {
         isEmpty = newIsEmpty;
         contents = newContents;
     }
+    Cell() = default;
 
     enum cellType {title='t', formula='f', value='v'};
 
@@ -42,12 +50,11 @@ public:
     }
 };
 
-class TitleCell: public Cell {
+class TitleCell: public Cell<string> {
 public:
     TitleCell(string newContents="0", bool newIsEmpty=true) {
         isEmpty = newIsEmpty;
         contents = newContents;
-        cout << "contents from constructor: " << contents << endl;
     }
     void setContents(string newContents) {
         contents = newContents;
@@ -62,7 +69,7 @@ public:
 
 };
 
-class FormulaCell: public Cell {
+class FormulaCell: public Cell<string> {
 public:
     void setContents(string newContents) {
         contents = newContents;
@@ -74,31 +81,18 @@ public:
     void printCell() {
         cout << contents << endl;
     }
-
-    /*void calculate() { //double calculate()
-        if (isEmpty == false) { //calculate the value
-            //parse the string contents: ignore the =, identify if value or cell ID, push on stack, calculate, pop off stack, call print function
-
-        }
-        else {
-            //the cell is empty...
-            cout << "This cell is empty. Please select another." << endl; //NEVER GETTING HERE - SEG FAULT WHEN ATTEMPT TO CALCULATE ON NONEXISTENT CELL
-            cerr << "THIS CELL IS EMPTY. PLEASE SELECT ANOTHER." << endl;
-            //throw exception???
-        }
-    }*/
     string getContents() {
         return contents;
     }
 };
 
-class ValueCell: public Cell {
+class ValueCell: public Cell<double> {
 public:
-    ValueCell(string newContents, bool newIsEmpty=true) {
+    ValueCell(double newContents=0.0, bool newIsEmpty=true) {
         isEmpty = newIsEmpty;
         contents = newContents;
     }
-    void setContents(string newContents) {
+    void setContents(double newContents) {
         contents = newContents;
     }
     void printCell() {
@@ -109,7 +103,7 @@ public:
 class Sheet {
 map<string, Cell*> sheet;
 public:
-    void updateValue(string &key, double value) { //will need to be updated to a double (value)
+    void updateValue(string &key, double value) { //note to self: will need to be updated to a double (value)
         sheet[key]->setContents(to_string(value));
     }
     void printSheet() {
@@ -128,7 +122,7 @@ public:
         switch(cell) {
             case 't': {
                 cout << "inside t case" << endl;
-                sheet[key]= new TitleCell(setContents(), false); //delete later in code to prevent core dump
+                sheet[key]= new TitleCell(setContents(), false); //note to self: delete later in code to prevent core dump
                 break; }
             case 'f': {
                 cout << "inside f case" << endl;
@@ -136,7 +130,7 @@ public:
                  break; }
             case 'v': {
                 cout << "inside v case" << endl;
-                sheet[key] = new ValueCell(setContents(), false);
+                sheet[key] = new ValueCell(setContents(), false); //getting an error here because it's no longer expecting a string but a double
                 break; }
         }
     }
@@ -144,11 +138,10 @@ public:
         map<string, Cell*>::const_iterator it;
         it = sheet.find(key);
         cout << "THE VALUE OF KEY TO EDIT: " << it->second->getContents() << endl; 
-        //determine enum type of cell
-       if ((*it->second).getIsEmpty() == false) {
+       /*if ((*it->second).getIsEmpty() == false) {
            cerr << "Error. Please enter location of a valid cell..." << endl;
-       }
-
+       }*/ //note to self: need to find a way to fix this ^^ - > throw an exception etc.
+        //determine enum type of cell
         if (Cell::title) {
             cout << "identified cell as a value cell" << endl;
         } else if (Cell::value) { 
@@ -162,7 +155,7 @@ public:
         sheet.erase(key);
     }
 
-    double calculate(string &key) { //probably need a similar function in Cell class
+    double calculate(string &key) { 
         cout << "GETTING IN CALCULATE FUNCTION" << endl;
         map<string, Cell*>::const_iterator it;
         string toParse;
@@ -187,11 +180,11 @@ public:
             } else if (isalpha(cellContents[i][0])) { //if the contents of the substring are a CellID (if it contains ANY letters) - call find cell (and then push value onto stack from there) 
                 cout << "contents contain a letter - cell ID" << endl;
                 if (Cell::value) {
-                    cout << "FOUUND A VALUE CELL" << endl;
+                    cout << "FOUND A VALUE CELL" << endl;
                     it = sheet.find(cellContents[i]);
                     s.push(stod(it->second->getContents()));
                 } else if (Cell::formula) {
-                    cout << "FOUUND A FORMULA CELL" << endl;
+                    cout << "FOUND A FORMULA CELL" << endl;
                     s.push(calculate(cellContents[i]));
                 } else { //title cell
                     cerr << "attempted to compute title cell" << endl;
@@ -242,13 +235,13 @@ public:
     
 };
 
-//SHOULD THIS BE IN SHEET CLASS???
-string setContents() { //will need to templatize so you can set a double for the value cell 
+//note to self: SHOULD THIS BE IN SHEET CLASS???
+string setContents() { //note to self: will need to templatize so you can set a double for the value cell 
     string temp;
     cout << "Please enter the contents for your cell: " << endl;
     cin.ignore();
     getline(cin, temp);
-    string userContents;
+    string userContents; //note to self: template? could cause problems with double value cells later...
     userContents = temp;
     return userContents;
 }
@@ -258,12 +251,11 @@ char printMainMenu() {
     cout << "WELCOME TO THE POSTFIX SPREADSHEET!" << endl;
     cout << "Please select a menu option: " << endl;
     cout << "[1] Create a new spreadsheet" << endl;
-    //cout << "[2] Open an existing spreadsheet" << endl;
     cin >> choice;
     return choice;
 }
 
-char printActionsMenu() { //combine all menus into this one:
+char printActionsMenu() { 
     char choice;
     cout << "[1] Create a title cell" << endl;
     cout << "[2] Create a formula cell" << endl;
@@ -278,7 +270,7 @@ char printActionsMenu() { //combine all menus into this one:
 void mainMenuSwitch(Sheet &s) {
     switch(printMainMenu()) {
         case '1': //create a new spreadsheet
-            //createNew();
+            //createNew(); //note to self: need this?
             cout << "Create a new spreadsheet!" << endl;
             break;
         default:
@@ -319,7 +311,8 @@ void actionsMenuSwitch(Sheet &s) {
             cout << "creating a value cell..." << endl;
             s.addCell(getLocationInfo(), Cell::value);
             break; }
-        case '4': { //edit an existing cell --> WORKING (need to iron out details when value is a double)
+        case '4': { //edit an existing cell --> 
+                    //note to self:  WORKING (need to iron out details when value is a double)
             cout << "editing an existing cell..." << endl;
             string key;
             string contents;
@@ -340,7 +333,7 @@ void actionsMenuSwitch(Sheet &s) {
             string key;
             cout << "Please enter the location of the cell you want to delete: " << endl;
             cin >> key;
-            s.removeCell(key); //might want to use return value of this function call to alert user if cell doesn't exist...
+            s.removeCell(key); //note to self: might want to use return value of this function call to alert user if cell doesn't exist...
         break; }
         case '6': { //calculate a cell
             string key;
@@ -374,7 +367,7 @@ int main() {
     return 0;
 }
 
-//SHOULD THIS BE IN SHEET CLASS?
+//note to self: SHOULD THIS BE IN SHEET CLASS?
 string getLocationInfo() {
     string key;
     cout << "Please enter the location for the new cell. A-J, 1-10: " << endl;
