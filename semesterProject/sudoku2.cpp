@@ -91,6 +91,7 @@ class SpaceReference {
 class Node {
     SpaceReference sr;
     Node *next;
+    Node *prev;
     public:
     Node(SpaceReference newSr, Node *newNext=NULL) {
         sr = newSr;
@@ -513,41 +514,34 @@ public:
                 int spaceX = i%3;
                 int spaceY = j%3;
                 cout << "CURRENTLY CHECKING: board[" << blockX << "][" << blockY << "] block[" << spaceX << "][" << spaceY << "]" << endl;
-                for (int k=1; k<=9; k++) {
-                    if (board[blockX][blockY].block[spaceX][spaceY].getValue() == 0) { //only ever passes this check the first time... once you assign a value in here it doesn't work...
+                if (board[blockX][blockY].block[spaceX][spaceY].getValue() ==0) {
+                    for (int k=1; k<=9; k++) {                            
                         if (!checkViolation(blockX, blockY, spaceX, spaceY, k)) {
-                            cout << "checked k value: " << k << " and it didn't violate" << endl;
-                            sr.setBoardCol(blockY);
-                            sr.setBoardRow(blockX);
-                            sr.setSpaceLocation(&board[blockX][blockY].block[spaceX][spaceY]);
-                            board[blockX][blockY].block[spaceX][spaceY].setValue(k);
-                            cout << "set the value to " << k << endl;
-                            board[blockX][blockY].block[spaceX][spaceY].setIsAttempted(true);
-                            cout << "marked the cell as attempted" << endl;
-                            //myLine.push(sr);
-                            Node *newNode = new Node(sr);
-                            newNode->push(newNode);
-                            cout << "pushed space reference info on the stack" << endl;
-                        }
-                    } else {
-                        cout << "current space is already completed" << endl;
-                    }    
+                                cout << "checked k value: " << k << " and it didn't violate" << endl;
+                                sr.setBoardCol(blockY);
+                                sr.setBoardRow(blockX);
+                                sr.setSpaceLocation(&board[blockX][blockY].block[spaceX][spaceY]);
+                                board[blockX][blockY].block[spaceX][spaceY].setValue(k);
+                                cout << "set the value to " << k << endl;
+                                board[blockX][blockY].block[spaceX][spaceY].setIsAttempted(true);
+                                cout << "marked the cell as attempted" << endl;
+                                //myLine.push(sr);
+                                Node *newNode = new Node(sr);
+                                newNode->push(newNode);
+                                cout << "pushed space reference info on the stack" << endl;
+                            }
+                        }   
+                } else {
+                    cout << "current space is already completed" << endl;
                 } 
                 //here! still in i j loop - out of k loop
                 cout << "out of k looping structure." << endl;
                     if (board[blockX][blockY].block[spaceX][spaceY].getValue() == 0) { //if the value of the space is still 0
                         cout << "contents of current space is still 0" << endl;
-                        if (myLine.empty()) {
-                            cout << "myLine is empty" << endl;
-                        } else {
-                            cout << "top of stack boardCol: " << myLine.top().getBoardCol() << ' ';
-                            cout << "boardRow:" << myLine.top().getBoardRow() << ' ';
-                            cout << "spaceLocation: " << myLine.top().getSpaceLocation() << endl;
-                            //go back to the previous block and try the next possible value
-                            //myLine.top().getSpaceLocation().getValue(); //ok wait another issue... say you go back a space and pop it off and try the next value, you could still have a problem later... you can't remove it from the stack ever right???
-                            //problems here: how to use [] notation since spaceLocation is a pointer
-                            //it doesn't know what the next available value is, so it either needs to recalculate it or I need to include some recurssion...
-                        }
+                        //add it to the map
+
+                        //seperate -> after the loop over the board -> loop over the map.
+                       
             }
         }
             }

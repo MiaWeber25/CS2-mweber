@@ -16,16 +16,12 @@ void samplePrint();
 string getLocationInfo();
 string setContents();
 
-//Node to self: PLACES I HAVE PROBLEMS: Cell in map declaration (iterators too!) && Cell::____ 
-//template <class T>
 class Cell {
 protected:
-    //string contents;
-//    T contents;
     bool isEmpty;
-   // Cell::cellType myType;
-    
+
 public:
+    enum cellType {title='t', formula='f', value='v'};
     /*Cell(string newContents="0", bool newIsEmpty=true) {
         isEmpty = newIsEmpty;
         contents = newContents;
@@ -36,7 +32,7 @@ public:
     }
     //Cell() = default;
 
-    //enum cellType {title='t', formula='f', value='v'};
+    
 
 
     void printCell(){  // KJC No need to make this virtual really make the 
@@ -53,22 +49,23 @@ public:
     }
 };
 
-class TitleCell: public Cell/*<string>*/ {
-	string contents;
+class TitleCell: public Cell {
+    string contents;
+    cellType type;
 public:
-    TitleCell(string newContents="", bool newIsEmpty=true):Cell(newIsEmpty) {
-        //isEmpty = newIsEmpty;
+    TitleCell(string newContents="", bool newIsEmpty=true, cellType newType=title):Cell(newIsEmpty) {
         contents = newContents;
+        type = newType;
     }
+
     void setContents(string newContents) {
         contents = newContents;
     }
-    /*void printCell() {
-        cout << contents << endl;
-    }*/
+
     string getContents() {
         return contents;
     }
+
 };
 
 class FormulaCell: public TitleCell {  // KJC Derive from TitleCell because you store a string
@@ -88,7 +85,7 @@ public:
     }
 };
 
-class ValueCell: public Cell/*<double>*/ {
+class ValueCell: public Cell {
 	double contents;
 public:
     ValueCell(double newContents=0.0, bool newIsEmpty=true):Cell(newIsEmpty) {
@@ -101,9 +98,9 @@ public:
     /*void printCell() {
         cout << contents << endl;
     }*/
-    /*string getContents() {
+    string getContents() {
         return (to_string(contents));
-    } I ADDED THIS!!!!!! */ 
+    }  
 };
 
 class Sheet {
@@ -122,32 +119,30 @@ public:
     map<string, Cell*> getSheet() {
         return sheet;
     }
-    void addCell(string key, Cell *cellref) { //have the user provide the key and the cell type to create
+    /*void addCell(string key, Cell *cellref) { //have the user provide the key and the cell type to create
         cout << "INSIDE ADDCELL" << endl;
         cout << "key from addCell() = " << key << endl;
         sheet[key]=cellref;
-      /*  switch(cell) {
-            case 't': {
-                cout << "inside t case" << endl;
-                sheet[key]= new TitleCell(setContents(), false); //note to self: delete later in code to prevent core dump
-                break; }
-            case 'f': {
-                cout << "inside f case" << endl;
-                 sheet[key] = new FormulaCell(setContents(), false);
-                 break; }
-            case 'v': {
-                cout << "inside v case" << endl;
-                sheet[key] = new ValueCell(setContents(), false); //getting an error here because it's no longer expecting a string but a double
-                break; }
-        }*/
+    }*/
+       void addCell(string key, Cell::cellType type, string userContents) {
+        if (type == Cell::title) {
+            sheet[key] = new TitleCell(userContents); //pass it contents
+        }
+        else if (type == Cell::formula) {
+            sheet[key] = new FormulaCell(userContents);
+        }
+        else { //type is v 
+            sheet[key] = new ValueCell(stod(userContents));
+        }
     }
+
    void editCell(string key, string newContents) { 
         map<string, Cell*>::const_iterator it;
         it = sheet.find(key);
         cout << "THE VALUE OF KEY TO EDIT: " << it->second->getContents() << endl; 
         it->second->setContents(newContents);
     }
-    
+
     void removeCell(string key) {
         //search through map and find the provided key, then delete the key-value pair
         sheet.erase(key);
@@ -235,8 +230,8 @@ public:
     
 };
 
-//note to self: SHOULD THIS BE IN SHEET CLASS???  KJC Not really, you can thing of these as functions of the main executable not so much the spreadsheet. 
-string setContents() { //note to self: will need to templatize so you can set a double for the value cell 
+
+string getUserContents() {  
     string temp;
     cout << "Please enter the contents for your cell: " << endl;
     cin.ignore();
@@ -278,38 +273,23 @@ void mainMenuSwitch(Sheet &s) {
     }
 }
 
-void cellMenuSwitch(Sheet &s) {
-    switch(printActionsMenu()) {
-        case '1': { //create a title cell
-            cout << "creating a title cell..." << endl;
-            s.addCell(getLocationInfo(), Cell::title);
-            break; }
-        case '2': { //create a formula cell
-            cout << "creating a formula cell..." << endl;
-            s.addCell(getLocationInfo(), Cell::formula); 
-            break; }
-        case '3': { //create a value cell
-            cout << "creating a value cell..." << endl;
-            s.addCell(getLocationInfo(), Cell::value);
-            break; }
-        default: 
-            cout << "Please enter a valid choice." << endl;
-    }
-}
+
 
 void actionsMenuSwitch(Sheet &s) {
+    string key = getLocationInfo();
+    string userContents = getUserContents();
     switch(printActionsMenu()) {
         case '1': { //create a title cell
             cout << "creating a title cell..." << endl;
-            s.addCell(getLocationInfo(), Cell::title);
+            
+            s.addCell(key,Cell::title, userContents);
             break; }
         case '2': { //create a formula cell
-            cout << "creating a formula cell..." << endl;
-            s.addCell(getLocationInfo(), Cell::formula);
+            s.addCell(getLocationInfo(), Cell::formula, userContents);
             break; }
         case '3': { //create a value cell
             cout << "creating a value cell..." << endl;
-            s.addCell(getLocationInfo(), Cell::value);
+            s.addCell(getLocationInfo(), Cell::value, userContents);
             break; }
         case '4': { //edit an existing cell --> 
                     //note to self:  WORKING (need to iron out details when value is a double)
