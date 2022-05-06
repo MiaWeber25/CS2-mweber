@@ -1,7 +1,7 @@
 COMPILER = g++
 COMPILER_FLAGS = -Wall -std=c++17
-PROGRAM_NAME = sheet
-CPP_FILES = sheet.cpp 
+PROGRAM_NAME = MWsheet
+CPP_FILES = MWsheet.cpp 
 
 build:
 	$(COMPILER) $(COMPILER_FLAGS) $(CPP_FILES) -o $(PROGRAM_NAME)

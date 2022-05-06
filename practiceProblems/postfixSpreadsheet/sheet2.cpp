@@ -1,3 +1,12 @@
+/*
+    This file includes all the notes from karl about sheet.cpp (comments located in MWsheet.cpp)
+    The goal of this file is to get the calculatle function working (or at least outlined and compiling)
+    I still have a segFault with creating Formula cells - and this file is not aimed at resolving that. 
+    Instead of putting all of the logic for calculate in the formula cell - it will reside in the sheet class...
+
+*/
+
+
 //future improvements: read/write from a file to enable user to "save" and open existing spreadsheets
 //automatically calculate the results of a formula cell and print out the result rather than the user needing to select calculate menu option
 #include <iostream>
@@ -35,6 +44,23 @@ public:
     bool getIsEmpty() {
         return isEmpty;
     }
+    bool checkContents() { //returns true if cell is a value cell and false if it's a formula cell (or contains letters)
+        map<string, Cell*>::const_iterator it;
+        string toParse;
+        vector<string> cellContents;
+        string intermediate;
+        stringstream ss(toParse);
+        while(getline(ss, intermediate, ' ')) {
+            cellContents.push_back(intermediate);
+        }
+        if (isdigit(cellContents[0][0])) {
+            cout << "contents are digits!" << endl;
+            return true;
+        } else {
+            cout << "contents are not digits" << endl;
+            return false;
+        }
+    }
 };
 
 class TitleCell: public Cell {
@@ -63,6 +89,8 @@ public:
    
     //issue: I don't want to take parameters because it would differ from the prototype in Cell class, but I think I have to...
     //DO THE STACK EVAL HERE!!
+
+
     string getContents() { //need to know: key and sheet
         stack<double> s;
         map<string, Cell*>::const_iterator it;
@@ -71,7 +99,6 @@ public:
         vector<string> cellContents;
         string intermediate;
         stringstream ss(toParse);
-        //parse the contents of THIS CELL -> creating substrings
         while(getline(ss, intermediate, ' ')) {
             cellContents.push_back(intermediate);
         }
@@ -79,30 +106,28 @@ public:
         for (unsigned int i=0; i<cellContents.size(); i++) {
             cout << "cellContents at 0: " << cellContents[i][0] << endl;
             cout << "cellContents @ " << i << " = " << cellContents[i] << endl;
-            //are the substrings numbers or cell IDs? 
             if (isdigit(cellContents[i][0])) { //if the contents of the substring are a value - push onto stack
-                //substring is a number! push the number onto the stack s
                 cout << "contents are digits!" << endl;
                 s.push(stod(cellContents[i]));
-            } else if (isalpha(cellContents[i][0])) { //if the contents of the substring are a CellID (if it contains ANY letters) - call find cell (and then push value onto stack from there) 
-                //substring is a cell ID! 
-                    //need to go get the contents of that cell - we don't know where that is...
-                    //I can't pass anything to this function or return anything different. must match prototype
+                cellContents[i].checkContents();
+            } 
+            
+            
+            
+            else if (isalpha(cellContents[i][0])) { //if the contents of the substring are a CellID (if it contains ANY letters) - call find cell (and then push value onto stack from there) 
                 cout << "contents contain a letter - cell ID" << endl;
-                //it = sheet.find(cellContents[i]);   
-        //THE FOLLOWING CODE: allows you to go to the cell ID reference and determine if that cell is a value, title, or formula cell
-        //this might be functionality that I can no longer perform if I'm not using enum types             
+                //it = sheet.find(cellContents[i]);
               //if (Cell::value) { //Cell ID for a value cell? 
                     cout << "FOUND A VALUE CELL" << endl;
                     //it = sheet.find(cellContents[i]);
                     s.push(stod(it->second->getContents()));
-                /* else if (Cell::formula) { //cell ID for another formula cell?
+                }/* else if (Cell::formula) { //cell ID for another formula cell?
                     cout << "FOUND A FORMULA CELL" << endl;
                     s.push(calculate(cellContents[i]));
                 } else { //title cell
                     cerr << "attempted to compute title cell" << endl;
                 }*/
-                } else {
+            } else {
                 switch(cellContents[i][0]) {
                     case '+': {
                         cout << "FOUND AN ADDITION" << endl;
@@ -112,7 +137,7 @@ public:
                         s.pop();
                         s.push(a+b); 
                         break; 
-                    } 
+                        } 
                     case '-': {
                         cout << "FOUND A SUBTRACTION" << endl;
                         double a = s.top();
@@ -121,7 +146,7 @@ public:
                         s.pop();
                         s.push(b-a); 
                         break; 
-                    }
+                        }
                     case '*': {
                         cout << "FOUND A MULTIPLICATION" << endl;
                         double a = s.top();
@@ -130,7 +155,7 @@ public:
                         s.pop();
                         s.push(a*b);
                         break;
-                    }
+                        }
                     case '/': {
                         cout << "FOUND A DIVISION" << endl;
                         double a = s.top();
@@ -143,7 +168,6 @@ public:
                 }
             }
         }
-        
     result = s.top(); //return the last thing on the stack
     return (to_string(result));
     }
@@ -212,6 +236,14 @@ public:
     void removeCell(string key) {
         //search through map and find the provided key, then delete the key-value pair
         sheet.erase(key);
+    }
+
+    double calculateCell(string &key) {
+        double result;
+        map<string, Cell*>::const_iterator it;
+        it = sheet.find(key);
+        it->second->getContents(); //potential problem: how will it know which cell to call getContents for? it's a formula cell...
+        return result;
     }
 };
 
@@ -308,16 +340,8 @@ void actionsMenuSwitch(Sheet &s) {
             string key;
             cout << "Please enter the location of the cell you wish to calculate: " << endl;
             cin >> key;
-            s.getSheet()[key]->getContents();
-            //s.updateValue(key, s.calculate(key));
-            //NEED TO CALL SET CONTENTS IN FORMULA CELL...
-            map<string, Cell*>::const_iterator it;
-            string toParse;
-            it = s.getSheet().find(key);
-            //toParse = it->second->FormulaCell::getContents();
-            toParse = it->second->getContents();
-            cout << "toParse = " << toParse << endl;
-
+            s.getSheet()[key]->getContents(); //call getContents() --> which is the initial calculate logic on user entered cell
+            s.calculateCell(key); 
             break; }   
         default: 
             cout << "Please enter a valid choice" << endl;   
