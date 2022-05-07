@@ -1,49 +1,47 @@
-//future improvements: read/write from a file to enable user to "save" and open existing spreadsheets
+/*
+    Postfix Spreadsheet
+    CSCI 112 
+    05-06-2022
+    Mia Weber
+*/
+//Future Optimizations: 
+//read/write from a file to enable user to "save" and open existing spreadsheets
 //automatically calculate the results of a formula cell and print out the result rather than the user needing to select calculate menu option
+//better link together formula cells so that you can calculate a formula cell that contains a reference to another UNCALCULATED formula cell
+//get calculate to work with negative numbers (currently identifies them as subtraction)
+
 #include <iostream>
 #include <map>
 #include <math.h>
 #include <stack>
 #include <algorithm> 
 #include <sstream>
-#include <vector> //FOR PRINT TESTING PURPOSES
+#include <vector>
 #include <stack>
 
 using namespace std;
 
-void print();
-void samplePrint();
+//FUNCTION PROTOTYPES
 string getLocationInfo();
-string setContents();
 
 class Cell {
 protected:
     bool isEmpty;
-
 public:
     enum cellType {title='t', formula='f', value='v'};
-    /*Cell(string newContents="0", bool newIsEmpty=true) {
+   
+    Cell(bool newIsEmpty=true) {
         isEmpty = newIsEmpty;
-        contents = newContents;
-    }*/
-    Cell(/*T newContents,*/ bool newIsEmpty=true) {
-        isEmpty = newIsEmpty;
-        //contents = newContents;
     }
-    //Cell() = default;
 
-    
-
-
-    void printCell(){  // KJC No need to make this virtual really make the 
-		// function that gets you the contents virtual instead
+    void printCell() {  
 		cout << getContents() << endl;
 	}
+
     virtual void setContents(string value)=0;
+
     virtual string getContents()=0;
-    // {
-   //     return contents;
-   // }
+   
     bool getIsEmpty() {
         return isEmpty;
     }
@@ -53,7 +51,7 @@ class TitleCell: public Cell {
     string contents;
     cellType type;
 public:
-    TitleCell(string newContents="", bool newIsEmpty=true, cellType newType=title):Cell(newIsEmpty) {
+    TitleCell(string newContents="", bool newIsEmpty=false, cellType newType=title):Cell(newIsEmpty) {
         contents = newContents;
         type = newType;
     }
@@ -68,36 +66,38 @@ public:
 
 };
 
-class FormulaCell: public TitleCell {  // KJC Derive from TitleCell because you store a string
-	double result;
+class FormulaCell: public TitleCell {  
+    string contents;
+    cellType type;
 public:
-  /*  void setContents(string newContents) {
+    FormulaCell(string newContents="", bool newIsEmpty=false, cellType newType=formula):TitleCell(newContents,newIsEmpty) {
         contents = newContents;
-    }*/
-    FormulaCell(string newContents="0", bool newIsEmpty=true):TitleCell(newContents,newIsEmpty) {
+        type = newType;
     }
- /*   void printCell() {
-        cout << getContent() << endl;
-    }*/
-    string getContents() {  // KJC This is where there is an interesting difference between TitleCell and a Formula Cell
-		// DO STACK EVAL HERE store double in result
-        return to_string(result);
+ 
+    string getContents() { 
+        return contents;
+    }
+
+    void setContents(string newContents) {
+        contents = newContents;
+        cout << "contents from F SET CONTENTS = " << contents << endl;
     }
 };
 
 class ValueCell: public Cell {
 	double contents;
+    cellType type;
 public:
-    ValueCell(double newContents=0.0, bool newIsEmpty=true):Cell(newIsEmpty) {
-        /*isEmpty = newIsEmpty;*/
+    ValueCell(double newContents=0.0, bool newIsEmpty=false, cellType newType=value):Cell(newIsEmpty) {
         contents = newContents;
+        type = newType;
     }
+
     void setContents(string newContents) {
-        contents = stod(newContents);  // This is a little ugly to match the virtual function prototype
+        contents = stod(newContents);  
     }
-    /*void printCell() {
-        cout << contents << endl;
-    }*/
+    
     string getContents() {
         return (to_string(contents));
     }  
@@ -106,9 +106,10 @@ public:
 class Sheet {
 map<string, Cell*> sheet;
 public:
-    void updateValue(string &key, double value) { //note to self: will need to be updated to a double (value)
+    void updateValue(string &key, double value) { 
         sheet[key]->setContents(to_string(value));
     }
+
     void printSheet() {
         for (auto it = sheet.begin(); it!=sheet.end(); it++) {
             cout << it->first << " : "; 
@@ -116,30 +117,26 @@ public:
             cout << endl;
         }
     }
+
     map<string, Cell*> getSheet() {
         return sheet;
     }
-    /*void addCell(string key, Cell *cellref) { //have the user provide the key and the cell type to create
-        cout << "INSIDE ADDCELL" << endl;
-        cout << "key from addCell() = " << key << endl;
-        sheet[key]=cellref;
-    }*/
-       void addCell(string key, Cell::cellType type, string userContents) {
+   
+    void addCell(string key, Cell::cellType type, string userContents) {
         if (type == Cell::title) {
-            sheet[key] = new TitleCell(userContents); //pass it contents
+            sheet[key] = new TitleCell(userContents); //create a new title cell
         }
         else if (type == Cell::formula) {
-            sheet[key] = new FormulaCell(userContents);
+            sheet[key] = new FormulaCell(userContents); //crete a new formula cell
         }
-        else { //type is v 
-            sheet[key] = new ValueCell(stod(userContents));
+        else { //type is value cell
+            sheet[key] = new ValueCell(stod(userContents)); //create a new value cell
         }
     }
 
    void editCell(string key, string newContents) { 
         map<string, Cell*>::const_iterator it;
         it = sheet.find(key);
-        cout << "THE VALUE OF KEY TO EDIT: " << it->second->getContents() << endl; 
         it->second->setContents(newContents);
     }
 
@@ -149,44 +146,35 @@ public:
     }
 
     double calculate(string &key) { 
-        cout << "GETTING IN CALCULATE FUNCTION" << endl;
+        //parse the contents of the cell -> store substrings in vector called cellContents
         map<string, Cell*>::const_iterator it;
         string toParse;
         it = sheet.find(key);
         toParse = it->second->getContents();
-        cout << "toParse = " << toParse << endl;
-        //parse the string into operators, values, and cell IDs
-        // KJC this to the END KJC should be in the formulaCell class
         vector<string> cellContents;
         string intermediate;
         stringstream ss(toParse);
         while(getline(ss, intermediate, ' ')) {
             cellContents.push_back(intermediate);
         }
+        //determine if each substring is a value, cell ID, or operator and perform appropriate tasks accordingly 
         stack<double> s;
-        //determine if each substring is a value, cell ID, or operator and perform appropriate tasks accordingly
         for (unsigned int i=0; i<cellContents.size(); i++) {
-            cout << "cellContents at 0: " << cellContents[i][0] << endl;
-            cout << "cellContents @ " << i << " = " << cellContents[i] << endl;
             if (isdigit(cellContents[i][0])) { //if the contents of the substring are a value - push onto stack
-                cout << "contents are digits!" << endl;
                 s.push(stod(cellContents[i]));
             } else if (isalpha(cellContents[i][0])) { //if the contents of the substring are a CellID (if it contains ANY letters) - call find cell (and then push value onto stack from there) 
-                cout << "contents contain a letter - cell ID" << endl;
-                if (Cell::value) {
-                    cout << "FOUND A VALUE CELL" << endl;
+                if (Cell::value) { //cell ID reference to a value cell? go get the value and push onto stack
                     it = sheet.find(cellContents[i]);
                     s.push(stod(it->second->getContents()));
-                } else if (Cell::formula) {
+                } else if (Cell::formula) { //cell ID reference to a formula cell? go calculate contents of formula cell and push onto stack
                     cout << "FOUND A FORMULA CELL" << endl;
                     s.push(calculate(cellContents[i]));
                 } else { //title cell
                     cerr << "attempted to compute title cell" << endl;
                 }
-            } else {
+            } else { //subtring is an opperator. which one?
                 switch(cellContents[i][0]) {
                     case '+': {
-                        cout << "FOUND AN ADDITION" << endl;
                         double a = s.top();
                         s.pop();
                         double b = s.top();
@@ -195,7 +183,6 @@ public:
                         break; 
                         } 
                     case '-': {
-                        cout << "FOUND A SUBTRACTION" << endl;
                         double a = s.top();
                         s.pop();
                         double b = s.top();
@@ -204,7 +191,6 @@ public:
                         break; 
                         }
                     case '*': {
-                        cout << "FOUND A MULTIPLICATION" << endl;
                         double a = s.top();
                         s.pop();
                         double b = s.top();
@@ -213,7 +199,6 @@ public:
                         break;
                          }
                     case '/': {
-                        cout << "FOUND A DIVISION" << endl;
                         double a = s.top();
                         s.pop();
                         double b = s.top();
@@ -224,19 +209,16 @@ public:
                 }
             }
         }
-    return s.top(); //return the last thing on the stack
-    
-    }
-    
+        return s.top(); //return the last thing on the stack
+    }  
 };
-
 
 string getUserContents() {  
     string temp;
     cout << "Please enter the contents for your cell: " << endl;
     cin.ignore();
     getline(cin, temp);
-    string userContents; //note to self: template? could cause problems with double value cells later...
+    string userContents; 
     userContents = temp;
     return userContents;
 }
@@ -265,8 +247,7 @@ char printActionsMenu() {
 void mainMenuSwitch(Sheet &s) {
     switch(printMainMenu()) {
         case '1': //create a new spreadsheet
-            //createNew(); //note to self: need this?
-            cout << "Create a new spreadsheet!" << endl;
+            cout << "creating a new spreadsheet..." << endl;
             break;
         default:
             cout << "Please enter a valid choice." << endl;
@@ -276,23 +257,26 @@ void mainMenuSwitch(Sheet &s) {
 
 
 void actionsMenuSwitch(Sheet &s) {
-    string key = getLocationInfo();
-    string userContents = getUserContents();
     switch(printActionsMenu()) {
         case '1': { //create a title cell
             cout << "creating a title cell..." << endl;
-            
+            string key = getLocationInfo();
+            string userContents = getUserContents();
             s.addCell(key,Cell::title, userContents);
             break; }
         case '2': { //create a formula cell
-            s.addCell(getLocationInfo(), Cell::formula, userContents);
+            cout << "creating a formula cell..." << endl;
+            string key = getLocationInfo();
+            string userContents = getUserContents();
+            s.addCell(key, Cell::formula, userContents);
             break; }
         case '3': { //create a value cell
             cout << "creating a value cell..." << endl;
-            s.addCell(getLocationInfo(), Cell::value, userContents);
+            string key = getLocationInfo();
+            string userContents = getUserContents();
+            s.addCell(key, Cell::value, userContents);
             break; }
         case '4': { //edit an existing cell --> 
-                    //note to self:  WORKING (need to iron out details when value is a double)
             cout << "editing an existing cell..." << endl;
             string key;
             string contents;
@@ -310,27 +294,32 @@ void actionsMenuSwitch(Sheet &s) {
                 break; }
             }
         case '5': { //remove an existing cell
-            string key;
+            string key; 
             cout << "Please enter the location of the cell you want to delete: " << endl;
             cin >> key;
-            s.removeCell(key); //note to self: might want to use return value of this function call to alert user if cell doesn't exist...
+            s.removeCell(key); //here is a place to throw an exception if the cell attempting to be deleted doesn't exist
         break; }
         case '6': { //calculate a cell
-            string key;
+            string key; 
             cout << "Please enter the location of the cell you wish to calculate: " << endl;
             cin >> key;
             s.updateValue(key, s.calculate(key));
-            cout << "at the end of case 7" << endl;
             break; }   
         default: 
             cout << "Please enter a valid choice" << endl;   
     }
 }
 
+string getLocationInfo() {
+    string key;
+    cout << "Please enter the location for the new cell. A-J, 1-10: " << endl;
+    cin >> key;
+    return key;
+}
+
 int main() {
     Sheet s;
     mainMenuSwitch(s);
-
     bool cont = true;
     while (cont == true) {
         actionsMenuSwitch(s);
@@ -345,12 +334,4 @@ int main() {
     }
     s.printSheet();
     return 0;
-}
-
-//note to self: SHOULD THIS BE IN SHEET CLASS?
-string getLocationInfo() {
-    string key;
-    cout << "Please enter the location for the new cell. A-J, 1-10: " << endl;
-    cin >> key;
-    return key;
 }
