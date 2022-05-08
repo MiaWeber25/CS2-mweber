@@ -23,6 +23,9 @@ public:
     void setPossibleVals(int newValue) {
         possibleVals.push_back(newValue);
     }
+    vector<int> getPossibleVals() {
+        return possibleVals;
+    }
 
     void printPossibleVals() {
         cout << "size: " << possibleVals.size() << endl;
@@ -292,7 +295,7 @@ public:
     void firstSolve() {
         bool boardUpdate = true;
         vector<int> answers;
-        //while(boardUpdate) {
+        while(boardUpdate) {
             boardUpdate = false;
             for (int i=0; i<9; i++) {
                 for (int j=0; j<9; j++) {
@@ -313,7 +316,7 @@ public:
                             }
                         }
                         if (answers.size() ==1) {
-                            //board[blockX][blockY].block[spaceX][spaceY].setValue(answers[0]);
+                            board[blockX][blockY].block[spaceX][spaceY].setValue(answers[0]);
                             //change bool flag for guarrenteedValue -wait
                             //change update flag
                             cout << "would place a value here" << endl;
@@ -322,9 +325,9 @@ public:
                     }
                 }
             }
-        //}
-        outputBoard();
-        //secondSolve();
+        }
+        //outputBoard();
+        secondSolve();
     }
 
     void outputBoard() {
@@ -341,7 +344,7 @@ public:
     }
 //---------------------------------BELOW HERE IS STACK-------------------------------------------------------------------
     void secondSolve() {
-        vector<int> insertOrder;
+        //vector<int> insertOrder;
         int counter = 0;
         for (int i=0; i<9; i++) {
             for (int j=0; j<9; j++) {
@@ -369,83 +372,61 @@ public:
                                 //break;
                             }
                         }   
-                } else {
-                    //cout << "current space is already completed" << endl;
-                } 
-                //HERE
-                /*for (unsigned int i=0; i<board[blockX][blockY].block[spaceX][spaceY].getPossibleVals().size(); i++) {
-                    cout << "CURRENT SPACE: " << "[" << blockX << "][" << blockY << "]   [" << spaceX << "][" << spaceY << "] = ";
-                    cout << board[blockX][blockY].block[spaceX][spaceY].getPossibleVals()[i] << " ";
-                    cout << endl;
-                }*/
-                //cout << "possible values for [0][1] [0][2] = ";
-                //for (int m =0; m< board[0][1].block[0][2].getPossibleVals().size(); m++) {
-                //    cout << board[0][1].block[0][2].getPossibleVals()[m] << endl;
-               // }
+                }          
                 //here! still in i j loop - out of k loop
-                //cout << "out of k looping structure." << endl;
-                    if (board[blockX][blockY].block[spaceX][spaceY].getValue() == 0) { //if the value of the space is still 0, add to map, RESET VALUE TO 0 in BOARD!
-                        sr.setBoardCol(blockY);
-                        sr.setBoardRow(blockX);
-                        sr.setSpaceCol(spaceY);
-                        sr.setSpaceRow(spaceX);
-                        //sr.setSpaceLocation(&board[blockX][blockY].block[spaceX][spaceY]);
-                       // cout << "contents of current space is still 0" << endl;
-                        //add it to the map
-                        //cout << "Board Row =  " << sr.getBoardRow() << " ";
-                        //cout << "Board Col = " << sr.getBoardCol() << endl;
-                        //int i=0;
-                        line[counter] = sr;
-                        insertOrder.push_back(counter);
-                        counter++;
-                        //line[i] = sr;
-                        //insertOrder.push_back(i);
-                        //i++;
-
-                        //seperate -> after the loop over the board -> loop over the map.
-
-            }
-            
-        }
-    }
-    //loop over the map 
-    //-> determine the [][] index of the space (now stores in SpaceReference)
-    //find the next possible value -> none? --> go back to the previous element in the map
-    //done with this loop (made it through all the keys in the map) --> board *should be solved
-
-        cout << "about to call thirdSolve" << endl;
-    //thirdSolve(insertOrder, line, 0);
-        cout << "AFTER thirdSolve " << endl;
-    }
-
-/*
-void thirdSolve(vector<int> &insertOrder, map<int, SpaceReference> &line, int i) {
-    while (i<insertOrder.size()) {
-        //cout << "currently looping through map" << endl;
-       // cout << "i = " << i << endl;
-        int s = insertOrder[i];
-        //HATE THIS VVVV Making a copy. Need to find a way around this...
-        vector<int> pv = board[line[s].getBoardRow()][line[s].getBoardCol()].block[line[s].getSpaceRow()][line[s].getSpaceCol()].getPossibleVals();
-
-        for (unsigned int k=1;k<=9; k++) {
-            //cout << "inside k loop!" << endl;
-            //cout << "inside k loop. k = " << k << endl;
-            //cout << "CHECKING: " << "[" << line[s].getBoardRow() << "][" << line[s].getBoardCol() << "]   [" << line[s].getSpaceRow() << "][" << line[s].getSpaceCol() << "]" << endl;
-            //cout << "SIZE = " << board[line[s].getBoardRow()][line[s].getBoardCol()].block[line[s].getSpaceRow()][line[s].getSpaceCol()].getPossibleVals().size() << endl;
-            for (unsigned int j = 0; j<board[line[s].getBoardRow()][line[s].getBoardCol()].block[line[s].getSpaceRow()][line[s].getSpaceCol()].getPossibleVals().size(); j++) { //check to see if k is in possibleVals vector
-               // cout << "inside j for loop" << endl;
-                if (find(pv.begin(), pv.end(), j) != pv.end() && board[line[s].getBoardRow()][line[s].getBoardCol()].block[line[s].getSpaceRow()][line[s].getSpaceCol()].getValue() != k) {
-                    //the value k is possible for this space, and isn't the current value of the space (which didn't work)
-                    cout << "PASSED IF CHECK!" << endl;
-                    board[line[s].getBoardRow()][line[s].getBoardCol()].block[line[s].getSpaceRow()][line[s].getSpaceCol()].setValue(k);
-                } else {
-                    break;
-                    cout << "FAILED IF CHECK! GO FURTHER BACK!" << endl; //there are still no k values that are possible for this space --> go further back
+                if (board[blockX][blockY].block[spaceX][spaceY].getValue() == 0) { //if the value of the space is still 0, add to map, RESET VALUE TO 0 in BOARD!
+                    sr.setBoardCol(blockY);
+                    sr.setBoardRow(blockX);
+                    sr.setSpaceCol(spaceY);
+                    sr.setSpaceRow(spaceX);
+                    //sr.setSpaceLocation(&board[blockX][blockY].block[spaceX][spaceY]);
+                    //////cout << "contents of current space is still 0" << endl;
+                    //add it to the map
+                    line[counter] = sr;
+                    //insertOrder.push_back(counter);
+                    counter++;
+                    //seperate -> after the loop over the board -> loop over the map.
                 }
             }
         }
+        cout << "about to call thirdSolve" << endl;
+        thirdSolve(line, 0);
+        cout << "AFTER thirdSolve " << endl;
+    }
+    //loop over the map 
+    //-> determine the [][] index of the space (now stored in Space class)
+    //find the next possible value -> none? --> go back to the previous element in the map (which is really the next key)
+    //done with this loop (made it through all the keys in the map) --> board *should be solved
+
+void thirdSolve(map<int, SpaceReference> &line, int i) {
+    cout << "i at begining of thirdSolve() = " << i << endl;
+    while (i<line.size()) {
+        //int s = insertOrder[i];
+        //HATE making a copy like this. Need to find a way around this...
+        //vector<int> pv = board[line[s].getBoardRow()][line[s].getBoardCol()].block[line[s].getSpaceRow()][line[s].getSpaceCol()].getPossibleVals();
+        vector<int> pv = board[line[i].getBoardRow()][line[i].getBoardCol()].block[line[i].getSpaceRow()][line[i].getSpaceCol()].getPossibleVals();
+
+        for (unsigned int k=1;k<=9; k++) {
+            //cout << "inside k loop" << endl;
+            //cout << "pv.size() = " << pv.size() << endl;
+            for (unsigned int j = 0; j<pv.size(); j++) { //check to see if k is in possibleVals vector
+                //cout << "inside j loop" << endl;
+                //if (find(pv.begin(), pv.end(), j) != pv.end() && board[line[s].getBoardRow()][line[s].getBoardCol()].block[line[s].getSpaceRow()][line[s].getSpaceCol()].getValue() != k) {
+                if (find(pv.begin(), pv.end(), j) != pv.end() && board[line[i].getBoardRow()][line[i].getBoardCol()].block[line[i].getSpaceRow()][line[i].getSpaceCol()].getValue() != k) {
+                    //the value k is possible for this space, and isn't the current value of the space (which didn't work)
+                    cout << "PASSED IF CHECK!" << endl;
+                    //board[line[s].getBoardRow()][line[s].getBoardCol()].block[line[s].getSpaceRow()][line[s].getSpaceCol()].setValue(k);
+                    board[line[i].getBoardRow()][line[i].getBoardCol()].block[line[i].getSpaceRow()][line[i].getSpaceCol()].setValue(k);
+
+                } else {
+                    //cout << "FAILED IF CHECK! GO FURTHER BACK!" << endl; //there are still no k values that are possible for this space --> go further back
+                    break;
+                }
+            }
+        }
+        cout << "itterating i!" << "i = " << i << endl;
         i++;
-        thirdSolve(insertOrder, line, i);
+        thirdSolve(line, i);
         //if (possibleVals.size() > 0) {
             //cout << "positive size for possible values!" << endl;
             //for (unsigned int j=0; j<possibleVals.size(); j++) {
@@ -457,8 +438,8 @@ void thirdSolve(vector<int> &insertOrder, map<int, SpaceReference> &line, int i)
         //    thirdSolve(insertOrder, line, i);
        // }
    
-    }*/
-};
+    }
+}
 
 
 
@@ -485,7 +466,7 @@ void thirdSolve(vector<int> &insertOrder, map<int, SpaceReference> &line, int i)
 
 //--------------------------------BELOW HERE IS LINKED LIST --------------------------------------------------------------------------
 
-    /*  
+     
     Block findBestBlock() { //function to find the block with the fewest empty spaces. Which blocks should I solve first? this tells you that
         Block currentBest;
         int best = 0;
@@ -498,10 +479,10 @@ void thirdSolve(vector<int> &insertOrder, map<int, SpaceReference> &line, int i)
             }
         }
         return currentBest;
-    }*/
+    }
 
 
-//};
+};
 
 
 
