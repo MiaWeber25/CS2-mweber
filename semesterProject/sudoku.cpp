@@ -328,38 +328,27 @@ public:
                 }
             }
         }
-        //outputBoard();
+        cout << "AFTER FIRST SOLVE" << endl;
+        outputBoard();
         secondSolve();
     }
-
-    /*void outputBoard() {
-        for (int i=0; i<9; i++) {
-            for (int j=0; j<9; j++) {
-                int blockX = i/3;
-                int blockY = j/3;
-                int spaceX = i%3;
-                int spaceY = j%3;
-                cout << "board[" << blockX << "][" << blockY << "] Block[" << spaceX << "][" << spaceY << "] =" << endl;
-                cout << board[blockX][blockY].block[spaceX][spaceY].getValue() << endl;
+    void outputBoard() { 
+        for (int r = 0; r < 9; r++){
+            for (int c = 0; c < 9; c++) {
+                if(c == 3 || c == 6)
+                    cout << " | ";
+                    cout << board[r/3][c/3].block[r%3][c%3].getValue() << " ";
+                    //cout << "9" << " ";
             }
-        }*/
-        void outputBoard() { 
-            for (int r = 0; r < 9; r++){
-                for (int c = 0; c < 9; c++) {
-                    if(c == 3 || c == 6)
-                        cout << " | ";
-                        cout << board[r/3][c/3].block[r%3][c%3].getValue() << " ";
-                        //cout << "9" << " ";
-                    }
-                    if(r == 2 || r == 5) {
-                        cout << endl;
-                        for(int k = 0; k<9; k++)
-                            cout << "---";
-                        }
-                        cout << endl;
-                    }
-
+            if(r == 2 || r == 5) {
+                cout << endl;
+                for(int k = 0; k<9; k++)
+                    cout << "---";
             }
+            cout << endl;
+        }
+
+    }
 //---------------------------------BELOW HERE IS STACK-------------------------------------------------------------------
     void secondSolve() {
         map<int, SpaceReference> line;
@@ -380,10 +369,16 @@ public:
                 sr.setSpaceRow(spaceX);
                 sr.setSpaceLocation(&board[blockX][blockY].block[spaceX][spaceY]);
                 if (board[blockX][blockY].block[spaceX][spaceY].getValue() == 0) {
-                    line[counter] = sr;
+                    //line[counter] = sr; //problem could have been that it was overwriting the one value in line at key counter...
+                    line.insert({counter, sr}); // but not idk becasue this isn't working either... line.size() still = 1...
                     cout << "size of line = " << line.size() << endl;
                 }
             }
+        }
+        //test print the contents of line: [0][0] [0][0] = 0 which isn't wrong... but it's suspicious...
+        for(unsigned int m=0; m<line.size(); m++) {
+            cout << "board col: " << line[m].getBoardCol() << " board row: " << line[m].getBoardRow() << " space col: " << line[m].getSpaceCol() << " space row: " << line[m].getSpaceRow() << endl;
+            cout << line[m].getSpace().getValue() << endl;; 
         }
         bool setCell = false;
         for (unsigned int k=0; k<line.size(); k++) {
@@ -472,7 +467,7 @@ int main() {
     gameBoard.placeGivens(gameBoard.readGivens(fileName),gameBoard);
     //gameBoard.checkViolation(1,0,1,1,3); //pass bRow, bCol, sRow, sCol, value
     gameBoard.firstSolve(); 
-    cout << "BACK IN MAIN. CALLING OUTPUTBOARD()" << endl;
+    cout << "BACK IN MAIN. AFTER SECOND SOLVE" << endl;
     gameBoard.outputBoard(); //**COMMENTED OUT FOR TESTING PURPOSES
 
     //cout << "best block value = " << gameBoard.findBestBlock().totalValues <<endl; //calling this here for testing purposes.
