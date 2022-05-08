@@ -4,22 +4,13 @@
 #include <fstream>
 #include <sstream>
 #include <math.h>
-//#include <iomanip> //MIGHT NEED THIS LATER FOR OUTPUT FORMATTING
 #include <algorithm>
-//#include <stack>
 #include <map> 
-//include <iterator> //MIGHT NOT NEED THIS BECAUSE I FOUND A NEW WAY TO SEARCH FOR VALUES IN VECTORS
 
 using namespace std;
 
-//FUNCTION PROTOTYPES
-//void thirdSolve(vector<int> &, map<int, SpaceReference> &, int);
-
-
-
 class Space {
     int value;
-    //vector<int> forbiddenValues;
     vector<int> possibleVals;
     bool isGiven;
     bool isAttempted; //value is an attempted solution 
@@ -32,7 +23,9 @@ public:
     void setPossibleVals(int newValue) {
         possibleVals.push_back(newValue);
     }
+
     void printPossibleVals() {
+        cout << "size: " << possibleVals.size() << endl;
         for (int i=0; i<possibleVals.size(); i++) {
             cout << possibleVals[i] << endl;
         }
@@ -52,26 +45,6 @@ public:
     void setIsAttempted(bool theBool) {
         isAttempted = theBool;
     }
-
-    /*void setForbiddenValue(int value) { //setter for forbiddenValue
-        forbiddenValues.push_back(value);
-    }
-    int getForbiddenValue(int index) { //NOT USING EITHER OF THESE RIGHT NOW...
-        return forbiddenValues[index];
-    }*/
-
-    void placeNumber() {
-
-    }
-
-    void switchNumber() {
-
-    }
-
-    void newPossibility() {
-
-    }
-
 };
 
 class SpaceReference {
@@ -122,38 +95,6 @@ class SpaceReference {
 
 };
 
-class Node {
-    SpaceReference sr;
-    Node *next;
-    Node *prev;
-    public:
-    Node(SpaceReference newSr, Node *newNext=NULL) {
-        sr = newSr;
-        next = newNext;
-    }
-    void push(Node *item) {
-        item->next=next;
-        next=item;
-    }
-    Node* top() { //gets the top(first) element
-        Node *p = this;
-        return p;
-    }
-    void pop() { //removes the top(first) element. I DON'T THINK I NEED THIS ONE...
-
-    }
-    void print(ostream &out) {
-        Node *p = this;
-        while (p!=NULL) {
-            //this output part is tricky...
-            out << p->sr.getBoardCol() << endl;
-            p=p->next;
-        }
-    }
-
-};
-
-
 class Block {
    // vector<vector<Space>> block;
    vector<int> forbidBlockVals;
@@ -161,9 +102,6 @@ class Block {
    //vector<int> colValues;
 public:
     vector<vector<Space>> block; //needs to be private
-    //vector<int> forbidBlockVals; //needs to be private
-    //vector<int> rowValues; //needs to be private
-    //vector<int> colValues; //needs to be private
     int totalValues; //needs to be private
 
     Block() { //constructor
@@ -189,27 +127,10 @@ public:
         return forbidBlockVals.size();
     }
 
-    /*int getRowValues(int value) {
-        return rowValues[value];
-    }
-    int getRowValuesSize() {
-        return rowValues.size();
-    }
-
-    int getColValues(int value) {
-        return colValues[value];
-    }
-    int getColValuesSize() {
-        return colValues.size();
-    }*/
-
     bool isComplete() { //are there 9 values in the block?
         return (totalValues == 9);
     }
 
-    void printBlock() {
-
-    }
 
     vector<int> calculateBValues() { //function to calculate the values that are not allowed in a block
         for (int i=0; i<block.size(); i++) {
@@ -218,34 +139,20 @@ public:
                     forbidBlockVals.push_back(block[i][j].getValue()); //use getter on line below instead...
             }
         }
-        //cout << "FORBIDDEN BLOCK VALS: " << endl;
-        //for (int i=0; i<forbidBlockVals.size(); i++) {
-        //    cout << forbidBlockVals[i] << endl;
-       // }
         return forbidBlockVals;
     }
-
     vector<int> getCol(int sCol) { //get the values in the desired col (passed to function)
         vector<int> colValues;
         for (int i=0; i<3; i++) {
             colValues.push_back(block[i][sCol].getValue());
         }
-        //cout << "COL VALUES: " << endl;
-        //for (int i=0; i<colValues.size(); i++) {
-        //    cout << colValues[i] << endl;
-        //}
         return colValues;
     }
-
     vector<int> getRow(int sRow) { //get the values in the desired row (passed to function)
         vector<int> rowValues;
         for (int i=0; i<3; i++) {
             rowValues.push_back(block[sRow][i].getValue());
         }
-        //cout << "ROW VALUES: " << endl;
-        //for (int i=0; i<rowValues.size(); i++) {
-        //    cout << rowValues[i] << endl;
-        //}
         return rowValues;
     }
 };
@@ -256,8 +163,6 @@ class Board {
     vector<int> neededValues;
     map<int, SpaceReference> line;
 public:
-    //vector<int> forbidRowVals; //needs to be private
-   // vector<int> forbidColVals; //needs to be private
     Board() { //constructor
         for (int i=0; i<3; i++) {
             vector<Block> newRow;
@@ -268,9 +173,11 @@ public:
             board.push_back(newRow);
         }
     }
+
     void addNeededValues(int &value) {
         neededValues.push_back(value);
     }
+
     bool checkNeededValues(int &value) {
         vector<int>::iterator it;
         it = find(neededValues.begin(), neededValues.end(), value);
@@ -309,8 +216,8 @@ public:
             }
         }
         return (tokens2);
-
     }
+
     void placeGivens(vector<int>  tokens2, Board &gameBoard) { //use the givens read in function above to populate the board
         int blockX, blockY;
         int spaceX, spaceY;
@@ -320,35 +227,26 @@ public:
             i++;
             blockY = tokens2[i];
             i++;
-
             spaceX = tokens2[i];
             i++;
             spaceY = tokens2[i];
             i++;
-
             value = tokens2[i];
             i++;
-
-            //cout << "Value: " << value << endl;
             board[blockX][blockY].block[spaceX][spaceY].setValue(value);
             board[blockX][blockY].totalValues++; //incremement tracker for totalValues
             board[blockX][blockY].block[spaceX][spaceY].setIsGiven(true);
         }
-    //cout << "value at Board[1][1]Block[1][0] which should be 8" << endl;
-   // cout << board[1][1].block[1][0].getValue() << endl;
     }
 
     bool checkColViolation(int bCol, int sCol, int value) { //is the value I'm trying to place in a space already present in the col?
         for (int i=0; i<3; i++) {
             for (int j=0; j<3; j++) {
                 if (board[i][bCol].getCol(sCol)[j] == value) {
-                    //cout << "Violation from checkColViolation()";
                     return true;
                 }
             }
-
         }
-        //cout << "No violation from checkColViolation()";
         return false;
     }
 
@@ -356,13 +254,10 @@ public:
         for (int i=0; i<3; i++) {
             for (int j=0; j<3; j++) {
                 if (board[bRow][i].getRow(sRow)[j]==value) {
-                   // cout << "Violation from checkRowViolation()" << endl;
                     return true;
                 }
             }
-
         }
-        //cout << "No violation from checkRowViolation()" << endl;
         return false;
     }
 
@@ -370,7 +265,6 @@ public:
         board[i][j].calculateBValues();
         for (int k=0; k<board[i][j].getForbiddenBlockValsSize(); k++) {
             if (board[i][j].getForbiddenBlockVals(k)==value) {
-                //value is in the vector = VIOLATION!
                 return true;
             }
         }
@@ -381,57 +275,56 @@ public:
     bool checkViolation(int bRow, int bCol, int sRow, int sCol, int value) { //call the function above and determine if placing the value would violate game rules
         if(checkForbidBlockVals(bRow, bCol, value)==true) {
             //VIOLATED! Cannot place a block here
-            //cout << "violated forbidden block vals" << endl;
-            return true; //might want to call another function here or something... it could be important to determine why this number can't go here? ie: what kind of violation to backtrace steps? or too much work for function later... idk
+            return true;
         }
         if (checkRowViolation(bRow, sRow, value)==true) {
-            //cout << "violated forbidden row vals" << endl;
             return true;
         }
         else if (checkColViolation(bCol, sCol, value)==true) {
-            //cout << "violated forbidden col vals" << endl;
             return true;
         }
         else {
-            //cout << "NO VIOLATION FROM CHECKVIOLATION()" << endl;
             return false;
         }
-
     }
     
 //start with iterativly, then make recurssive.
     void firstSolve() {
         bool boardUpdate = true;
         vector<int> answers;
-        //cout << "Solve was called" << endl << endl;
-        while(boardUpdate) {
+        //while(boardUpdate) {
             boardUpdate = false;
             for (int i=0; i<9; i++) {
                 for (int j=0; j<9; j++) {
-                        int blockX = i/3;
+                        int blockX = i/3; //row
                         int blockY = j/3;
                         int spaceX = i%3;
                         int spaceY = j%3;
                      if (board[blockX][blockY].block[spaceX][spaceY].getValue() == 0) { //empty space
                         answers.clear();
+                        cout << "board[" << blockX << "][" << blockY << "] Block[" << spaceX << "][" << spaceY << "] =" << endl;
                         for (int k=1; k<=9; k++) {
                             if(!checkViolation(blockX, blockY, spaceX, spaceY, k)) { //no violation --> add to vector?
+                                cout << k << endl;
                                 board[blockX][blockY].block[spaceX][spaceY].setPossibleVals(k);                                
                                 answers.push_back(k);
+                            } else {
+                                //cout << "tried " << k << " but DID VIOLATE!" << endl;
                             }
                         }
                         if (answers.size() ==1) {
-                            board[blockX][blockY].block[spaceX][spaceY].setValue(answers[0]);
+                            //board[blockX][blockY].block[spaceX][spaceY].setValue(answers[0]);
                             //change bool flag for guarrenteedValue -wait
                             //change update flag
+                            cout << "would place a value here" << endl;
                             boardUpdate = true;
                         }
                     }
                 }
             }
-        }
+        //}
         outputBoard();
-        secondSolve();
+        //secondSolve();
     }
 
     void outputBoard() {
@@ -441,9 +334,8 @@ public:
                 int blockY = j/3;
                 int spaceX = i%3;
                 int spaceY = j%3;
-                board[blockX][blockY].block[spaceX][spaceY].printPossibleVals();
-                //cout << "board[" << blockX << "][" << blockY << "] Block[" << spaceX << "][" << spaceY << "] =" << endl;
-                //cout << board[blockX][blockY].block[spaceX][spaceY].getValue() << endl;
+                cout << "board[" << blockX << "][" << blockY << "] Block[" << spaceX << "][" << spaceY << "] =" << endl;
+                cout << board[blockX][blockY].block[spaceX][spaceY].getValue() << endl;
             }
         }
     }
@@ -524,10 +416,6 @@ public:
         cout << "about to call thirdSolve" << endl;
     //thirdSolve(insertOrder, line, 0);
         cout << "AFTER thirdSolve " << endl;
-
-
-        //cout << "insert order: " << insertOrder[i] << endl;
-        //cout << "board col @= " << i << " " << line[s].getBoardCol() << endl;
     }
 
 /*
@@ -570,7 +458,7 @@ void thirdSolve(vector<int> &insertOrder, map<int, SpaceReference> &line, int i)
        // }
    
     }*/
-}
+};
 
 
 
@@ -597,7 +485,7 @@ void thirdSolve(vector<int> &insertOrder, map<int, SpaceReference> &line, int i)
 
 //--------------------------------BELOW HERE IS LINKED LIST --------------------------------------------------------------------------
 
-      
+    /*  
     Block findBestBlock() { //function to find the block with the fewest empty spaces. Which blocks should I solve first? this tells you that
         Block currentBest;
         int best = 0;
@@ -610,10 +498,10 @@ void thirdSolve(vector<int> &insertOrder, map<int, SpaceReference> &line, int i)
             }
         }
         return currentBest;
-    }
+    }*/
 
 
-};
+//};
 
 
 
@@ -634,6 +522,6 @@ int main() {
     cout << "BACK IN MAIN. CALLING OUTPUTBOARD()" << endl;
   //gameBoard.outputBoard(); //**COMMENTED OUT FOR TESTING PURPOSES
 
-    cout << "best block value = " << gameBoard.findBestBlock().totalValues <<endl; //calling this here for testing purposes.
+    //cout << "best block value = " << gameBoard.findBestBlock().totalValues <<endl; //calling this here for testing purposes.
     return 0;
 }

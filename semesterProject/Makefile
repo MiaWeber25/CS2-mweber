@@ -1,7 +1,7 @@
 COMPILER = g++
 COMPILER_FLAGS = -Wall -std=c++17
-PROGRAM_NAME = sudoku2
-CPP_FILES = sudoku2.cpp 
+PROGRAM_NAME = sudoku
+CPP_FILES = sudoku.cpp 
 
 build:
 	$(COMPILER) $(COMPILER_FLAGS) $(CPP_FILES) -o $(PROGRAM_NAME)
