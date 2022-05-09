@@ -351,6 +351,7 @@ public:
     }
 //---------------------------------BELOW HERE IS STACK-------------------------------------------------------------------
     void secondSolve() {
+        //cout << "inside second solve" << endl;
         map<int, SpaceReference> line;
         int counter = 0;
         for (int i=0; i<9; i++) {
@@ -369,9 +370,12 @@ public:
                 sr.setSpaceRow(spaceX);
                 sr.setSpaceLocation(&board[blockX][blockY].block[spaceX][spaceY]);
                 if (board[blockX][blockY].block[spaceX][spaceY].getValue() == 0) {
+                    cout << "inside if statement --> value at space is 0" << endl;
+                    cout << "value of counter = " << counter << endl; //counter is always 0
                     //line[counter] = sr; //problem could have been that it was overwriting the one value in line at key counter...
                     line.insert({counter, sr}); // but not idk becasue this isn't working either... line.size() still = 1...
                     cout << "size of line = " << line.size() << endl;
+                    counter++;
                 }
             }
         }
@@ -381,11 +385,14 @@ public:
             cout << line[m].getSpace().getValue() << endl;; 
         }
         bool setCell = false;
+        //IDENTIFIED POSSIBLE PROBLEM --> does 0 violate? set value to 0
         for (unsigned int k=0; k<line.size(); k++) {
             for (unsigned int n=line[k].getSpace().getValue(); n<=9; n++) {
                 if (!checkViolation(line[k].getBoardRow(),line[k].getBoardCol(),line[k].getSpaceRow(),line[k].getSpaceCol(), n)) {
+                    cout << "no violation inside if statement" << endl;
                     setCell = true;
                     line[k].getSpace().setValue(n);
+                    cout << "new value for space = " << line[k].getSpace().getValue() << endl;
                 }
             }
             if (!setCell) {

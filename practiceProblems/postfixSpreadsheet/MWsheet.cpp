@@ -63,7 +63,6 @@ public:
     string getContents() {
         return contents;
     }
-
 };
 
 class FormulaCell: public TitleCell {  
