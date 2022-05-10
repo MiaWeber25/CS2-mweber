@@ -1,0 +1,77 @@
+Review Today 3-29-2022
+Test will be Thursday 3-31-2022
+50% MC
+50% Coding
+	Reading code
+	Implementing a removed function
+	Complete coding of a set of classes.
+Everything since the last test is fair game
+Inheritance
+	Objects are similar
+	class A {
+	  blah 
+	};
+	
+	class B:public A {
+	
+	}
+Aggregation
+	Objects are made of other Objects
+	class C {
+	  B bar;
+	  A animal;
+	  A animals[10];
+	};
+Keywords
+	virtual
+	pure virtual functions
+	new, *delete
+		A *pa;
+		pa=new A();
+		....
+		delete pa;
+	template
+Vocabulary
+	abstract class 
+		At least one pure virtual function
+		and at least one is implemented
+		class A {
+		  public:
+		  virtual void fun1()=0;
+		  virtual void show() { cout << "Hello" << endl; }
+		};
+			cannot declare and instance of A   A a;
+			can declare a pointer to A         A *lpa;
+		Not all functions have implementations
+	pure virtual function
+		A function without implementation 
+	    virtual void fun()=0;
+	pure virtual class
+		No function has an implementation
+		class A {
+		  public:
+		  virtual void fun1()=0;
+		  virtual void show()=0;
+		};
+	concrete class
+		All function have implementations
+vector
+Stack
+	LIFO
+	Understand the implementation of
+	 push, pop
+	 top
+	 class Stack {
+	    vector<int> values;
+	    public:
+	    int pop() {
+	    }
+	    STL
+	    void pop() {
+	    }
+	    int top() {
+	    } 
+	 } 
+Queue
+	FIFO
+	

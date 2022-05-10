@@ -1,0 +1,97 @@
+Test Tuesday March 1st
+50% From Multiple Choice
+	Facts
+	20 Questions
+50%	Reading and Writing
+	2-4
+	50% Reading Code
+	50% Writing Code
+
+Class keyword
+	vs Struct
+public, private, protected
+	scope of the variable
+const
+	Understand the use of const in the parameter list vs
+	  const between ) { of the function implementation.
+friend
+	There is not secret "this" parameter
+
+ostream vs ofstream vs cout
+	Inheritance
+ostream vs ifstream vs cin
+	Inheritance
+	
+insertion operator <<
+	--- Temporaririly forget it can shift
+extraction operator >>
+
+class A {
+};
+
+class B:public A {
+};
+
+subclass, superclass, use of :: to specify which function and data to access
+Derived classes
+
+class A {
+  public:
+  void foo() {
+  }
+};
+
+class B:public A {
+  void foo() {
+     A::foo();
+  }
+};
+
+
+class A {
+  int num;
+  public:
+  A(int x=10) {
+    num=x;
+  }
+  void output(ostream &out){
+   out << num;
+  }
+};
+
+class B:public A {
+  B(int y=0):A(y) {
+  }
+};
+
+... in main
+B b(11);
+b.output(cout);
+
+recursion
+	2 requirements for recursion
+		1   Calls itself  (if indirectly)
+		2	A clear stopping condition
+	fib
+	integration
+	tic-tac-toe (game possibilities) 
+
+C  Fair Game Easy Points
+	pass by reference
+	pass by value
+	scope of a variable
+
+Reading code
+		compiled so no errors
+		give example similar in nature but not identical to ones 
+		from class
+		ostream insertion <<
+			overloading for purposes of output
+		istream extraction >>
+			overloading for purposes of input
+
+Look like a kattis but without the hard thinking
+
+		
+		
+	
