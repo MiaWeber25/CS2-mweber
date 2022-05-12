@@ -139,6 +139,8 @@ public:
 
 
     vector<int> calculateBValues() { //function to calculate the values that are not allowed in a block
+        //clear out forbidBlockVals
+        fill(forbidBlockVals.begin(), forbidBlockVals.end(), 0);
         for (int i=0; i<block.size(); i++) {
             for (int j=0; j<block.size(); j++) {
                 if (block[i][j].getValue()!=0) //don't need to push back the 0 - insignificant for this... (just means no value is placed yet)
@@ -149,6 +151,7 @@ public:
     }
     vector<int> getCol(int sCol) { //get the values in the desired col (passed to function)
         vector<int> colValues;
+        //clear out rowCols? (although might not matter because generating vector within function)
         for (int i=0; i<3; i++) {
             colValues.push_back(block[i][sCol].getValue());
         }
@@ -156,6 +159,7 @@ public:
     }
     vector<int> getRow(int sRow) { //get the values in the desired row (passed to function)
         vector<int> rowValues;
+        //clear out rowVals? (although might not matter because generating vector within function)
         for (int i=0; i<3; i++) {
             rowValues.push_back(block[sRow][i].getValue());
         }
@@ -362,6 +366,8 @@ public:
                 int spaceY = j%3;
                 //cout << "CURRENTLY CHECKING: board[" << blockX << "][" << blockY << "] block[" << spaceX << "][" << spaceY << "]" << endl;
                 SpaceReference sr;
+                
+                if (board[blockX][blockY].block[spaceX][spaceY].getValue() == 0) {
                 sr.resetSR();
 
                 sr.setBoardCol(blockY);
@@ -369,38 +375,51 @@ public:
                 sr.setSpaceCol(spaceY);
                 sr.setSpaceRow(spaceX);
                 sr.setSpaceLocation(&board[blockX][blockY].block[spaceX][spaceY]);
-                if (board[blockX][blockY].block[spaceX][spaceY].getValue() == 0) {
                     cout << "inside if statement --> value at space is 0" << endl;
                     cout << "value of counter = " << counter << endl; //counter is always 0
                     //line[counter] = sr; //problem could have been that it was overwriting the one value in line at key counter...
-                    line.insert({counter, sr}); // but not idk becasue this isn't working either... line.size() still = 1...
+                    line.insert({counter, sr}); // this seems to be working... size of line = number of empty spaces (spaces where the value is 0)
                     cout << "size of line = " << line.size() << endl;
                     counter++;
                 }
             }
         }
-        //test print the contents of line: [0][0] [0][0] = 0 which isn't wrong... but it's suspicious...
-        for(unsigned int m=0; m<line.size(); m++) {
-            cout << "board col: " << line[m].getBoardCol() << " board row: " << line[m].getBoardRow() << " space col: " << line[m].getSpaceCol() << " space row: " << line[m].getSpaceRow() << endl;
-            cout << line[m].getSpace().getValue() << endl;; 
-        }
         bool setCell = false;
-        //IDENTIFIED POSSIBLE PROBLEM --> does 0 violate? set value to 0
+        //cout << "value at 0 0 2 0: " <<  board[0][0].block[2][0].getValue() << endl;
         for (unsigned int k=0; k<line.size(); k++) {
-            for (unsigned int n=line[k].getSpace().getValue(); n<=9; n++) {
+            //for (unsigned int n=line[k].getSpace().getValue()+1; n<=9; n++) {
+            cout << "k value = " << k << endl;
+            setCell = false;
+            for (unsigned int n=line[k].getSpace().getValue()+1; n<=9 && !setCell; n++) { //could be an issue here with the reference to the sapce...
+                //cout << "value being checked in n loop: " << n << endl;
+                cout << "inside n loop!" << endl;
+                cout << "value of n: " << n << endl;
+                //n=n+1;
+                //cout << "adjusted value being checked in n loop: " << n << endl;
                 if (!checkViolation(line[k].getBoardRow(),line[k].getBoardCol(),line[k].getSpaceRow(),line[k].getSpaceCol(), n)) {
                     cout << "no violation inside if statement" << endl;
+                    cout << "CHECKING: " << line[k].getBoardRow() << " , " << line[k].getBoardCol() << " , " << line[k].getSpaceRow() << " , " << line[k].getSpaceCol() << endl;
                     setCell = true;
-                    line[k].getSpace().setValue(n);
+                    cout << "no violation for: " << n << endl;
+                    board[line[k].getBoardRow()][line[k].getBoardCol()].block[line[k].getSpaceRow()][line[k].getSpaceCol()].setValue(n);
                     cout << "new value for space = " << line[k].getSpace().getValue() << endl;
+                    char l;
+                    //k++;
+                    cin >> l;
+                    //PROBLEM: sometimes only places one value, other times, places two values, sometimes places three. haven't seen more than three.
+                    //this makes me think that it is getting inside that if statement...
                 }
+            } 
+            //NEVER MAKING IT TO THE END OF THE LINE?????????
+            if (!setCell) { //getting down in here? no i don't think so... never actually looping over 0 0 2 0
+                cout << "DOWN IN SECOND IF STATEMENT" << endl;
+                //line[k].getSpace().setValue(0);
+                board[line[k].getBoardRow()][line[k].getBoardCol()].block[line[k].getSpaceRow()][line[k].getSpaceCol()].setValue(0);
+                //k--;
+                k=k-2;
             }
-            if (!setCell) {
-                line[k].getSpace().setValue(0);
-                k--;
-            }
-           
         }
+        
     }
 		    // In our discussion, I think you were just going to add all the cells with 0 value to the map.
 		    // then, you can loop over the map and it makes moving back and forth much simpler. I think this
