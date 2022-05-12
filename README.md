@@ -1,26 +1,29 @@
 # CS2-mweber
 Projects and coursework for CSCI 112 Data Structures Spring 2022
 
-# **Practice Assignments**
-**Assignment #1**
-| Name| Value|
-|----------------|:---------------------------------------|
-| **Name**       |Hello World|
-| **Description**|Basic Hello World Program|
-| **Due Date**   |30-Aug-2021|
-| **Status**     |Done|
-| **Location**   |https://github.com/MiaWeber25/CS1-mweber/blob/main/test/hello.cpp|
-| **Self Grade** |100/100|
-| **Notes**      |completed all the requirements and screenshot of code in image.jpg
 
 # **Semester Project**
 **SudokuSolver**
 | Name| Value|
 |----------------|:---------------------------------------|
-| **Name**       |SudokuSolver|
+| **Name**       |sudokuSolver.cpp|
 | **Description**|Program will solve given sudoku puzzles|
-| **Due Date**   |in progress|
-| **Status**     |in progress |
-| **Location**   |https://github.com/MiaWeber25/CS1-mweber/blob/main/test/hello.cpp|
-| **Self Grade** |100/100|
-| **Notes**      |completed all the requirements and screenshot of code in image.jpg
+| **Location**   |https://github.com/MiaWeber25/CS2-mweber/tree/main/semesterProject
+
+# **Post-fix Spreadsheet**
+| Name| Value|
+|----------------|:---------------------------------------|
+| **Name**       |postfixSpreadsheet.cpp|
+| **Description**|Program will implement spreadsheet operations and perform calculations in post-fix notation|
+| **Location**   |https://github.com/MiaWeber25/CS2-mweber/blob/main/practiceProblems/postfixSpreadsheet/postfixSpreadsheet.cpp
+
+
+# **Squarefoot Gardening**
+| Name| Value|
+|----------------|:---------------------------------------|
+| **Name**       |garden.cpp|
+| **Description**|Program will calculate number of plots needed to plant given number of plants|
+| **Location**   |https://github.com/MiaWeber25/CS2-mweber/blob/main/practiceProblems/gardenSquares/garden.cpp|
+
+
+

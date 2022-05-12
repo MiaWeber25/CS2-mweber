@@ -360,6 +360,8 @@ public:
         int counter = 0;
         for (int i=0; i<9; i++) {
             for (int j=0; j<9; j++) {
+
+                
                 int blockX = i/3;
                 int blockY = j/3;
                 int spaceX = i%3;
@@ -387,7 +389,7 @@ public:
         bool setCell = false;
         //cout << "value at 0 0 2 0: " <<  board[0][0].block[2][0].getValue() << endl;
 
-        
+
         for (unsigned int k=0; k<line.size(); k++) {
             //for (unsigned int n=line[k].getSpace().getValue()+1; n<=9; n++) {
             cout << "\n\n******************************" << endl;
