@@ -1,0 +1,45 @@
+1:00-2:50 Monday May 16th
+Comprehensive but averaged in like all other tests
+25% on MC (20-30 questions)
+75% on Coding ->some from scratch and some fill in blanks (derrived and overload insertion from scratch to be expected)
+----------------------------------------------
+keywords: 
+1. struct
+2. class (understanding of struct vs. class), name of the constructor (same as the class)->multiple constructors, name of destructor ~name of the class
+3. public, private (default), protected (derived classes have access to data members and functions)
+4. friend (allows you to change where the instance variable "this" is passed in parameters)
+    mainly used to "add" insertion operator to another class like ostream of extraction from istream
+5. this (default instance variable pointer/handle) "provides the addresss of the instance variable"
+6. const 
+    (variable declaration: constant variable that never changes.)
+    (parameter declaration of a reference: promise not to change the value -> can't appear on left side of =)
+    (between the function declaration and the { in a class: promise not to change instance (reference )variable)
+7. static (when public, you can use the variable without an instance of the class)
+    can't initialize that value in the class, have to initialize it after the class (but defined publicly within the class)
+8. virtual (a function that CAN be redefined in a subclass)
+    pure virtual (virtual void) --> no implementation in baseclass - must be implemented in ever subclass
+----------------------------------------------------
+vocab:
+1. concrete (all functions are implemented)
+2. abstract (some functions are implemented and some are missing implementations (pure virtual functions))
+3. pure virtual class (all functions are pure virtual. no functions have implementations) --> java: INTERFACE CLASS
+4. super class/parent class (the class another class is derived from)
+5. sub class/derived class 
+6. :: (scope resolution operator)
+7. << and >> (ostream and istream, vs ofstream and ifstream) && sstream (stringstream ss)
+8. polymorphism (many meanings to the ___ function. facilitated by virtual keyword. in C++ vector<class A> cannot support polymorphism but A* can)
+9. search times! 
+-----------------------------------------------------
+concepts:
+1. Stacks (LIFO, useful for evaluation postfix expressions. way the Math-ALU in modern machines work)
+2. Queues (FIFO)
+3. Linked List
+4. Doubly Linked List
+5. Binary Tree
+6. recursion (calls itself -> even possibly indirectly (doesn't have to be inside function body), has a clear stopping condition)
+    integration (no fib on exam)
+
+syntax:
+1. derived classes (class B: public A) --> could also be private (should be able to guess what that would mean)
+
+

@@ -297,7 +297,6 @@ public:
         }
     }
     
-//start with iterativly, then make recurssive.
     void firstSolve() {
         bool boardUpdate = true;
         vector<int> answers;
@@ -353,7 +352,7 @@ public:
         }
 
     }
-//---------------------------------BELOW HERE IS STACK-------------------------------------------------------------------
+
     void secondSolve() {
         //cout << "inside second solve" << endl;
         map<int, SpaceReference> line;
@@ -361,34 +360,27 @@ public:
         for (int i=0; i<9; i++) {
             for (int j=0; j<9; j++) {
 
-                
+
                 int blockX = i/3;
                 int blockY = j/3;
                 int spaceX = i%3;
                 int spaceY = j%3;
                 //cout << "CURRENTLY CHECKING: board[" << blockX << "][" << blockY << "] block[" << spaceX << "][" << spaceY << "]" << endl;
                 SpaceReference sr;
-                
                 if (board[blockX][blockY].block[spaceX][spaceY].getValue() == 0) {
                 sr.resetSR();
-
                 sr.setBoardCol(blockY);
                 sr.setBoardRow(blockX);
                 sr.setSpaceCol(spaceY);
                 sr.setSpaceRow(spaceX);
                 sr.setSpaceLocation(&board[blockX][blockY].block[spaceX][spaceY]);
-                    //cout << "inside if statement --> value at space is 0" << endl;
-                    //cout << "value of counter = " << counter << endl; //counter is always 0
-                    //line[counter] = sr; //problem could have been that it was overwriting the one value in line at key counter...
-                    line.insert({counter, sr}); // this seems to be working... size of line = number of empty spaces (spaces where the value is 0)
+                    line.insert({counter, sr}); 
                     //cout << "size of line = " << line.size() << endl;
                     counter++;
                 }
             }
         }
         bool setCell = false;
-        //cout << "value at 0 0 2 0: " <<  board[0][0].block[2][0].getValue() << endl;
-
 
         for (unsigned int k=0; k<line.size(); k++) {
             //for (unsigned int n=line[k].getSpace().getValue()+1; n<=9; n++) {
@@ -398,9 +390,6 @@ public:
             //cout << "board: " << line[k].getBoardRow() << ":" << line[k].getBoardCol() << ":" << line[k].getSpaceRow() << ":" << line[k].getSpaceCol() << endl;
             setCell = false;
             for (unsigned int n=line[k].getSpace().getValue()+1; n<=9 && !setCell; n++) { //could be an issue here with the reference to the sapce...
-                //cout << "value being checked in n loop: " << n << endl;
-                //cout << "inside n loop: " << n << endl;
-                //n=n+1;
                 //cout << "adjusted value being checked in n loop: " << n << endl;
                 if (!checkViolation(line[k].getBoardRow(),line[k].getBoardCol(),line[k].getSpaceRow(),line[k].getSpaceCol(), n)) {
                     setCell = true;
@@ -410,51 +399,13 @@ public:
                     //cin >> l;
                 }
             }
-            if (!setCell) { //getting down in here? no i don't think so... never actually looping over 0 0 2 0
+            if (!setCell) { 
                 //cout << "Moving backward!" << endl;
                 board[line[k].getBoardRow()][line[k].getBoardCol()].block[line[k].getSpaceRow()][line[k].getSpaceCol()].setValue(0);
                 k=k-2;
             }
         }
     }
-		    // In our discussion, I think you were just going to add all the cells with 0 value to the map.
-		    // then, you can loop over the map and it makes moving back and forth much simpler. I think this
-		    // logic will be a problem if you set the values BEFORE you have a reference to one a cell with 
-		    // mulitple possible values (line 368). I would think about something like this pseudo code:
-		    /*
-		     
-		       map multiValueCells;
-		       int cellCounter=0;
-		       for (...i ) {
-		         for (...j ) {
-			   spaceReference sr;
-			   sr.setStuff(...)
-			   multiValueCells.put(cellCounter++, sr);
-
-			 }
-		       }
-
-		       then, AFTER you have all the cells in the map
-
-		       bool setCell=false
-		       for (int k=0; k<multiValueCells.length; k++) {
-
-                         for (int n=multiValueCells.get(k).getValue(); n<=9; n++) {                            
-                           if (!checkViolation(blockX, blockY, spaceX, spaceY, n)) {
-			     setCell=true;
-			     multiValueCells.get(k).setValue(n);
-			   }
-			 }
-			 if (!setCell) {
-			   didn't find a valid value so move back
-			   multiValueCells.get(k).setValue(0)
-			   k--;
-			 }
-		       }
-		        
-
-
-		    */
 
     Block findBestBlock() { //function to find the block with the fewest empty spaces. Which blocks should I solve first? this tells you that
         Block currentBest;
@@ -470,10 +421,7 @@ public:
         return currentBest;
     }
 
-
 };
-
-
 
 int main() {
     Board gameBoard; //create a gameBoard
@@ -482,8 +430,6 @@ int main() {
     cout << "Welcome To Sudoku Solver!!" << endl;
     cout << "Please enter the name of the file with givens: ";
     getline(cin, fileName);
-
-
 
     //place the givens
     gameBoard.placeGivens(gameBoard.readGivens(fileName),gameBoard);
