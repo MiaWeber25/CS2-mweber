@@ -8,10 +8,12 @@ Projects and coursework for CSCI 112 Data Structures Spring 2022
 |----------------|:---------------------------------------|
 | **Name**       |sudokuSolver.cpp|
 | **Description**|Program will solve given sudoku puzzles|
-                 |givens1.txt = level Medium|
-                 |givens2.txt, givens3.txt, and givens4.txt = level Easy|
-                 |givens5.txt = level Hard|
 | **Location**   |https://github.com/MiaWeber25/CS2-mweber/tree/main/semesterProject
+  
+  givens1.txt = level Medium
+  givens2.txt, givens3.txt, and givens4.txt = level Easy
+  givens5.txt = level Hard
+
 
 # **Post-fix Spreadsheet**
 | Name| Value|
